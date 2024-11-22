@@ -1,29 +1,116 @@
 import express from 'express';
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise'; // npm i express ejs mysql2
+import bcrypt from "bcrypt"; // make sure to do i bcrypt on fast comet terminal as well // npm i bcrypt
+import session from 'express-session'; // npm i express-session
+// npm i bcrypt
+
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+// initializing sessions
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+}))
+
 //for Express to get values using POST method
 app.use(express.urlencoded({extended:true}));
 
 //setting up database connection pool
 const pool = mysql.createPool({
-    host: "your_hostname",
-    user: "your_username",
-    password: "your_password",
-    database: "your_database",
+    host: "justin-juarez.tech",
+    user: "justinju_webuser",
+    password: "CST-336",
+    database: "justinju_meal",
     connectionLimit: 10,
     waitForConnections: true
 });
 const conn = await pool.getConnection();
 
+
+// api spoonacular https://api.spoonacular.com/recipes/complexSearch?apiKey=17b87f4473434a9fab7d8268985d33c7
+
+
+
 //routes
 app.get('/', (req, res) => {
-   res.send('Hello Express app!')
+   res.render('login.ejs');
 });
+
+app.get('/profile', (req, res) => {
+    if(req.session.authenticated) {
+        res.render('profile.ejs');
+    } else {
+        res.redirect('login.ejs');
+    }
+ });
+
+ app.get('/welcome', isAuthenticated, (req, res) => {
+    res.render('welcome.ejs');
+ });
+
+ app.get('/settings', isAuthenticated, (req, res) => {
+    res.render('settings.ejs');
+ });
+
+ app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+ });
+ 
+
+app.post('/login', async (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    console.log(password);
+    let passwordHash = "";
+    // let match = await bcrypt.compare(password, passwordHash);
+    // change admin to user likely
+    let sql = `SELECT *
+    FROM user 
+    WHERE username = ?`;
+    const [rows] = await conn.query(sql, [username]);
+    if(rows.length > 0) { // if found at least one record
+        passwordHash = rows[0].password; // always get an array when getting data from db
+    }
+
+    let match = await bcrypt.compare(password, passwordHash);
+
+    if(match) {
+        // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+        req.session.authenticated = true;
+        res.render('welcome.ejs');
+    } else {
+        res.redirect("/");
+    }
+    // res.render('welcome.ejs');
+ });
+
+ app.get('/recipe/new', isAuthenticated, (req, res) => {
+    res.render('newRecipe.ejs');
+ });
+
+ // to add recipes of your own // only authenticated users can add recipes
+ app.post('/recipe/new', isAuthenticated, async (req, res) => {
+    let name = req.body.name;
+    let instructions = req.body.instructions;
+    let picUrl = req.body.picture;
+
+    let sql = `INSERT INTO recipe
+    (name, instructions, thumbnail)
+    VALUES
+    (?,?,?)`;
+    let sqlParams = [name, instructions, picUrl];
+    const[rows] = await conn.query(sql, sqlParams);
+
+    res.render('newRecipe.ejs');
+});
+
 
 app.get("/dbTest", async(req, res) => {
     let sql = "SELECT CURDATE()";
@@ -31,6 +118,15 @@ app.get("/dbTest", async(req, res) => {
     res.send(rows);
 });//dbTest
 
-app.listen(3000, ()=>{
+//Middleware Functions, to check if user is authenticated
+function isAuthenticated(req, res, next) {
+    if(req.session.authenticated) {
+        next();
+    } else {
+        res.redirect("/");
+    }
+}
+
+app.listen(3011, ()=>{
     console.log("Express server running")
 })
