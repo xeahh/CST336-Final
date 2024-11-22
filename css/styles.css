@@ -1,0 +1,20 @@
+.button{
+    border-radius: 50px;
+    width: 400px;
+    height: 70px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    margin: 20px;
+}
+.button a {
+    text-decoration: none;
+    color: white;
+}
+.landing {
+     background-size: cover; text-align: center; display: flex; justify-content: center; flex-direction: column; align-items: center; background-repeat: no-repeat;
+    background-attachment: fixed; height: 100vh;
+}
