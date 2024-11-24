@@ -50,8 +50,8 @@ app.get('/profile', (req, res) => {
     }
  });
 
- app.get('/welcome', isAuthenticated, (req, res) => {
-    res.render('welcome.ejs');
+ app.get('/home', isAuthenticated, (req, res) => {
+    res.render('home.ejs');
  });
 
  app.get('/settings', isAuthenticated, (req, res) => {
@@ -75,6 +75,10 @@ app.get('/home', (req, res) => {
     res.render('home.ejs');
 });
 
+app.get('/mealplan', (req, res) => {
+    res.render('mealplan.ejs');
+});
+
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
@@ -95,7 +99,7 @@ app.post('/login', async (req, res) => {
     if(match) {
         // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
         req.session.authenticated = true;
-        res.render('welcome.ejs');
+        res.render('home.ejs');
     } else {
         res.redirect("/");
     }
