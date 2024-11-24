@@ -93,7 +93,6 @@ app.get('/mealplanweek', async (req, res) => {
                 WHERE user_id = 1 
                 AND (date > ? AND date < ?)`; // change user_id to logged in user id
     const [rows] = await conn.query(sql, [date, date2]);
-    console.log(rows);
     res.send(rows);
 });
 

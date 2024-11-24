@@ -12,7 +12,6 @@ for (var i = 1; i <= 7; i++) {
 
 document.addEventListener("DOMContentLoaded", function() {
     var startDateElement = document.getElementById("startdate");
-    var endDateElement = document.getElementById("enddate");
     var options = { month: 'long', day: 'numeric' };
 
     // Retrieve saved start date from localStorage
@@ -23,29 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var formattedStartDate = startDate.toLocaleDateString('en-US', options);
         startDateElement.textContent = formattedStartDate;
 
-        // Display the day of the week
-        for (var j = 0; j < 7; j++) {
-            var currentDay = new Date(startDate);
-            currentDay.setDate(startDate.getDate() + j);
-            var dayOfWeekText = daysOfWeek[currentDay.getDay()];
-            dayElements[j].textContent = dayOfWeekText;
-
-            // Set the data-date attribute for each meal element
-            mealElements[j * 3].setAttribute("data-date", currentDay);
-            mealElements[j * 3].setAttribute("data-meal-type", "breakfast");
-            mealElements[j * 3 + 1].setAttribute("data-date", currentDay);
-            mealElements[j * 3 + 1].setAttribute("data-meal-type", "lunch");
-            mealElements[j * 3 + 2].setAttribute("data-date", currentDay);
-            mealElements[j * 3 + 2].setAttribute("data-meal-type", "dinner");
-        }
-
-
-
-        // Calculate and display the end date (6 days after the start date)
-        var endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 6);
-        var endFormattedDate = endDate.toLocaleDateString('en-US', options);
-        endDateElement.textContent = endFormattedDate;
+        displayDays(startDate);
 
         // Display the meal plan
         displayMealPlan(startDate);
@@ -55,27 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var formattedDate = today.toLocaleDateString('en-US', options);
         startDateElement.textContent = formattedDate;
 
-        // Display the day of the week
-        for (var j = 0; j < 7; j++) {
-            var currentDay = new Date(today);
-            currentDay.setDate(currentDay.getDate() + j);
-            var dayOfWeekText = daysOfWeek[currentDay.getDay()];
-            dayElements[j].textContent = dayOfWeekText;
-
-            // Set the data-date attribute for each meal element
-            mealElements[j * 3].setAttribute("data-date", currentDay);
-            mealElements[j * 3].setAttribute("data-meal-type", "breakfast");
-            mealElements[j * 3 + 1].setAttribute("data-date", currentDay);
-            mealElements[j * 3 + 1].setAttribute("data-meal-type", "lunch");
-            mealElements[j * 3 + 2].setAttribute("data-date", currentDay);
-            mealElements[j * 3 + 2].setAttribute("data-meal-type", "dinner");
-        }
-
-        // Calculate and display the end date (6 days after today)
-        var endDate = new Date(today);
-        endDate.setDate(endDate.getDate() + 6);
-        var endFormattedDate = endDate.toLocaleDateString('en-US', options);
-        endDateElement.textContent = endFormattedDate;
+        displayDays(today);
 
         // Display the meal plan
         displayMealPlan(startDate);
@@ -100,10 +57,20 @@ document.querySelector("#newstartdate").addEventListener("change", function() {
     document.querySelector("#startdate").style.display = "block";
     document.querySelector("#newstartdate").style.display = "none";
 
+    displayDays(newDate);
 
+    // Save the selected start date to localStorage
+    localStorage.setItem("startDate", newDate.toISOString());
+
+    // Display the meal plan
+    displayMealPlan(newDate);
+});
+
+function displayDays(startDate) {
+    var options = { month: 'long', day: 'numeric' };
     // Display the day of the week
     for (var j = 0; j < 7; j++) {
-        var currentDay = new Date(newDate);
+        var currentDay = new Date(startDate);
         currentDay.setDate(currentDay.getDate() + j);
         var dayOfWeekText = daysOfWeek[currentDay.getDay()];
         dayElements[j].textContent = dayOfWeekText;
@@ -117,19 +84,13 @@ document.querySelector("#newstartdate").addEventListener("change", function() {
         mealElements[j * 3 + 2].setAttribute("data-meal-type", "dinner");
     }
 
-    // Save the selected start date to localStorage
-    localStorage.setItem("startDate", newDate.toISOString());
-
     // Calculate and display the new end date (6 days after the new start date)
     var endDateElement = document.getElementById("enddate");
-    var endDate = new Date(newDate);
+    var endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 6);
     var endFormattedDate = endDate.toLocaleDateString('en-US', options);
     endDateElement.textContent = endFormattedDate;
-
-    // Display the meal plan
-    displayMealPlan(newDate);
-});
+};
 
 
 // Display meal plan
