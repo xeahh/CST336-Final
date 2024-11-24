@@ -79,6 +79,18 @@ app.get('/mealplan', (req, res) => {
     res.render('mealplan.ejs');
 });
 
+app.get('/admin', async (req, res) => {
+    let sql = `SELECT * FROM user`;
+    const [rows] = await conn.query(sql);
+    let sql2 = `SELECT * FROM recipe`;
+    const [rows2] = await conn.query(sql2);
+    let sql3 = `SELECT * FROM meal_plan`;
+    const [rows3] = await conn.query(sql3);
+    let sql4 = `SELECT * FROM ingredient`;
+    const [rows4] = await conn.query(sql4);
+    res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, ingredients: rows4});
+});
+
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
