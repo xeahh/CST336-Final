@@ -39,7 +39,7 @@ const conn = await pool.getConnection();
 
 //routes
 app.get('/', (req, res) => {
-   res.render('login.ejs');
+   res.render('landing.ejs');
 });
 
 app.get('/profile', (req, res) => {
@@ -62,7 +62,18 @@ app.get('/profile', (req, res) => {
     req.session.destroy();
     res.redirect('/');
  });
- 
+
+app.get('/login', (req, res) => {
+    res.render('login.ejs');
+ });
+
+app.get('/signup', (req, res) => { 
+    res.render('signup.ejs');
+});
+
+app.get('/home', (req, res) => {    
+    res.render('home.ejs');
+});
 
 app.post('/login', async (req, res) => {
     let username = req.body.username;
