@@ -3,21 +3,6 @@ body {
     padding: 0;
 }
 
-button{
-    border-radius: 50px;
-    width: 400px;
-    height: 70px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    justify-content: center;
-    flex-direction: column;
-    display: flex;
-    margin: 20px;
-    border: none;
-    align-items: center;
-    color: white;
-}
 
 .button {
     border-radius: 50px;
@@ -64,4 +49,38 @@ input::placeholder {
 
 .box {
     background-color: white; width: 500px; height: 700px; border-radius: 30px; align-items: center; display: flex; flex-direction: column; justify-content: center; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.14);
+}
+
+td {
+    width: 150px;
+}
+
+.meal {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+#newstartdate {
+    display: none;
+}
+
+.pencil {
+    background-color: #f5f5f5;
+    border: none;
+}
+
+.meal-plan-table th, .meal-plan-table td {
+    text-align: center;
+    padding: 10px;
+}
+
+.meal-plan {
+    background-color: #F5F5F5; 
+    display:flex; 
+    text-align: center; 
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column;
 }

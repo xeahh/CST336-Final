@@ -75,6 +75,10 @@ app.get('/home', (req, res) => {
     res.render('home.ejs');
 });
 
+app.get('/mealplan', (req, res) => {
+    res.render('mealplan.ejs');
+});
+
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
