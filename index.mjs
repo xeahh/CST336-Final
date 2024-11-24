@@ -32,7 +32,7 @@ const pool = mysql.createPool({
 });
 const conn = await pool.getConnection();
 
-
+// conn.query(`TRUNCATE TABLE meal_plan;`);
 // api spoonacular https://api.spoonacular.com/recipes/complexSearch?apiKey=17b87f4473434a9fab7d8268985d33c7
 
 
@@ -75,8 +75,38 @@ app.get('/home', (req, res) => {
     res.render('home.ejs');
 });
 
-app.get('/mealplan', (req, res) => {
-    res.render('mealplan.ejs');
+app.get('/mealplan', async (req, res) => {
+    let sql = `SELECT * FROM recipe`;
+    const [rows] = await conn.query(sql);
+    res.render('mealplan.ejs', {recipes: rows});
+});
+
+// Fetches the meal plan for the week
+app.get('/mealplanweek', async (req, res) => {
+    let date = new Date(req.query.date);
+    let date2 = new Date(req.query.date);
+    date.setDate(date.getDate() -1);
+    date2.setDate(date2.getDate() + 7);
+    let sql = `SELECT name, instructions, thumbnail, date, meal_type 
+                FROM recipe
+                NATURAL JOIN meal_plan
+                WHERE user_id = 1 
+                AND (date > ? AND date < ?)`; // change user_id to logged in user id
+    const [rows] = await conn.query(sql, [date, date2]);
+    console.log(rows);
+    res.send(rows);
+});
+
+app.post('/mealplan', async (req, res) => {
+        let recipe_id = req.query.recipe_id;
+        let date = req.query.date;
+        let user_id = req.query.user_id;
+        let meal_type = req.query.meal_type;
+        let sql = `INSERT INTO meal_plan (user_id, recipe_id, date, meal_type)
+        VALUES (?,?,?,?)`;
+        let sqlParams = [user_id,recipe_id,date,meal_type];
+        const [rows]=await conn.query(sql, sqlParams);
+        res.redirect('/mealplan');
 });
 
 app.get('/admin', async (req, res) => {
@@ -89,6 +119,20 @@ app.get('/admin', async (req, res) => {
     let sql4 = `SELECT * FROM ingredient`;
     const [rows4] = await conn.query(sql4);
     res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, ingredients: rows4});
+});
+
+app.post('/deletemealplan', async (req, res) => {
+    let plan_id = req.body.plan_id;
+    console.log('Received Plan ID to delete:', plan_id);
+
+    if (!plan_id) {
+        throw new Error('Invalid plan_id');
+    }
+
+    let sql = `DELETE FROM meal_plan WHERE plan_id = ?`;
+    let sqlParams = [plan_id];
+    await conn.query(sql, sqlParams);
+    res.redirect('/admin');
 });
 
 app.post('/login', async (req, res) => {

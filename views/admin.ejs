@@ -74,6 +74,8 @@
                     <th>User ID</th>
                     <th>Recipe ID</th>
                     <th>Date</th>
+                    <th>Meal Type</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,6 +85,12 @@
                         <td><%= i.user_id %></td>
                         <td><%= i.recipe_id %></td>
                         <td><%= i.date %></td>
+                        <td><%= i.meal_type %></td>
+                        <td><form action="/deletemealplan" method="POST" style="display:inline;">
+                            <input type="hidden" name="plan_id" value="<%= i.plan_id %>">
+                            <button type="submit">Delete</button>
+                        </form></td>
+                        
                     </tr>
                 <% } %>
             </tbody>
