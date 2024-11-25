@@ -113,7 +113,7 @@ app.get('/mealplan', (req, res) => {
     res.render('mealplan.ejs');
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login/in', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     console.log(password);
@@ -135,7 +135,7 @@ app.post('/login', async (req, res) => {
         req.session.authenticated = true;
         res.render('home.ejs');
     } else {
-        res.redirect("/");
+        res.redirect("/login");
     }
     // res.render('welcome.ejs');
  });
