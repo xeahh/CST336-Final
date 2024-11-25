@@ -81,13 +81,20 @@ app.get('/mealplan', async (req, res) => {
     res.render('mealplan.ejs', {recipes: rows});
 });
 
+app.get('/recipe', async (req, res) => {
+    let recipe_id = req.query.recipe_id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.send(rows[0]);
+});
+
 // Fetches the meal plan for the week
 app.get('/mealplanweek', async (req, res) => {
     let date = new Date(req.query.date);
     let date2 = new Date(req.query.date);
     date.setDate(date.getDate() -1);
     date2.setDate(date2.getDate() + 7);
-    let sql = `SELECT name, instructions, thumbnail, date, meal_type 
+    let sql = `SELECT name, instructions, thumbnail, recipe_id, date, meal_type 
                 FROM recipe
                 NATURAL JOIN meal_plan
                 WHERE user_id = 1 

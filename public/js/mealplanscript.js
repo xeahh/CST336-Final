@@ -99,6 +99,7 @@ async function displayMealPlan(startDate) {
 
     for (meal of mealElements) {
         meal.src = "/imgs/nomealselected.png";
+        meal.setAttribute("data-recipe-id", "");
     }
 
     await fetch(`/mealplanweek?date=${startDate}`, {
@@ -109,6 +110,7 @@ async function displayMealPlan(startDate) {
             var date = new Date(row.date);
 
             var mealType = row.meal_type;
+            var recipeId = row.recipe_id;
             var recipeName = row.name;
             var recipeInstructions = row.instructions;
             var recipeThumbnail = row.thumbnail;
@@ -119,6 +121,7 @@ async function displayMealPlan(startDate) {
                 console.log("Meal element not found:",startDate, date, mealType);
                 return;
             } else {
+                mealElement.setAttribute("data-recipe-id", recipeId);
                 mealElement.src = recipeThumbnail;
             }
         });
@@ -126,17 +129,49 @@ async function displayMealPlan(startDate) {
 };
 
 var modal = document.getElementById("myModal");
+var recipeModal = document.getElementById("recipeModal");
 var selectedMeal = null;
 var meals = document.querySelectorAll(".meal");
 meals.forEach(function(meal) {
-    meal.addEventListener("click", function() {
+    meal.addEventListener("click", async function() {
         selectedMeal = this.id;
-        modal.style.display = "block";
+        recipeId = this.getAttribute("data-recipe-id");
+        if (!recipeId) {
+            modal.style.display = "block";
+            return;
+        }
+        recipeModal.style.display = "block";
+
+        await getRecipeDetails(recipeId);
     });
 });
 
+async function getRecipeDetails(recipeId) {
+    if (!recipeId) {
+        return;
+    }
+    await fetch(`/recipe?recipe_id=${recipeId}`, {
+        method: "GET"
+    }).then(response => response.json())
+    .then(data => {
+        // Update the modal with recipe details
+        var recipeName = data.name;
+        var recipeInstructions = data.instructions;
+        var recipeDetails = `
+            <h1>Recipe Details</h1>
+            <h2>Recipe Name: ${recipeName}</h2>
+            <p>${recipeInstructions}</p>
+            `;
+        document.getElementById("recipeDetails").innerHTML = recipeDetails;
+    });
+};
 
-document.querySelector(".close").addEventListener("click", function() {
+
+document.querySelector("#close2").addEventListener("click", function() {
+    recipeModal.style.display = "none";
+});
+
+document.querySelector("#close").addEventListener("click", function() {
     modal.style.display = "none";
 });
 
@@ -145,7 +180,6 @@ var recipeItems = document.querySelectorAll(".recipe-item");
 recipeItems.forEach(function(item) {
     item.addEventListener("click", function() {
         var recipeId = this.getAttribute("data-recipe-id");
-        var recipeName = this.textContent;
 
         // Update the selected meal with the recipe name
         var recipeImg = this.getAttribute("data-recipe-img");
@@ -157,9 +191,8 @@ recipeItems.forEach(function(item) {
         var selectedDate = selectedMealElement.getAttribute("data-date");
         selectedDate = new Date(selectedDate).toISOString().split('T')[0];
 
-        // Send the selected recipe data to the server
+        // Send the selected recipe data to the server to update the meal plan
         postSelectedRecipe(recipeId, selectedDate, selectedMealType);
-
 
         // Close the modal after selection
         modal.style.display = "none";

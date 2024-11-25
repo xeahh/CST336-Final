@@ -89,6 +89,21 @@ td {
     flex-direction: column;
 }
 
+.recipe-item {
+    background-color: #F5F5F5;
+    width: 200px;
+    height: 50px;
+    margin: 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recipe-item:hover {
+    background-color: #f0f0f0;
+}
+
 .modal {
     display: none;
     position: fixed;
