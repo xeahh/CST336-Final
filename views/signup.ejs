@@ -9,11 +9,11 @@
 <body class="landing" style="background-color: #F5F5F5;">
     <div class="box">
         
-        <form style="display: flex; justify-content: center; flex-direction: column; align-items: center;" action="">
+        <form id="form1" style="display: flex; justify-content: center; flex-direction: column; align-items: center;" action="/signup/in" method="POST">
             <div class="signup" style="display: flex; flex-direction: column; width: 200px;">
-                <input maxlength="32" placeholder="Username" type="text" required>
-                <input placeholder="Password" type="password" required>
-                <input placeholder="Confirm Password" type="password" required>
+                <input maxlength="32" placeholder="Username" type="text" name="username" required>
+                <input placeholder="Password" type="password" name="password" required>
+                <input placeholder="Confirm Password" name="pass2" type="password" required>
             </div>
             <div>
                 <button class="button" style="background-color: #4caf50; width: 200px; margin: 20px;">Sign up</button>
@@ -26,6 +26,6 @@
         </div>
        
     </div>
-    
+    <script src="/js/checkpassword.js"></script>
 </body>
 </html>

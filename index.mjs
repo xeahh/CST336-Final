@@ -70,7 +70,41 @@ app.get('/login', (req, res) => {
 app.get('/signup', (req, res) => { 
     res.render('signup.ejs');
 });
+app.post('/signup/in', async(req, res) => { 
+    let username = req.body.username;
+    let password = req.body.password;
+    console.log(username,password);
 
+    let saltRounds = 10;
+    let passcheck = 0;
+    let salt = bcrypt.genSaltSync(saltRounds);
+    let hash = bcrypt.hashSync(password, salt);
+
+    let sql = `SELECT *
+    FROM user 
+    WHERE username = ?`;
+    const [rows] = await conn.query(sql, [username]);
+    console.log(rows.length);
+    if(rows.length > 0) { 
+        passcheck = 1; 
+    }
+
+    console.log("passcheck: "+passcheck);
+    console.log("username/pass: "+username,hash);
+
+    if(passcheck==0) {
+        req.session.authenticated = true;
+        let sql = `INSERT INTO user
+                    (username, password)
+                    VALUES
+                    (?,?)`;
+        const [new1] = await conn.query(sql, [username,hash]);
+        console.log("run1");
+        res.render('home.ejs');
+    } else {
+        res.redirect("signup.ejs");
+    }
+});
 app.get('/home', (req, res) => {    
     res.render('home.ejs');
 });
