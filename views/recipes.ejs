@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/recipes.css" rel="stylesheet">
+    <title>Recipes</title>
+</head>
+<body>
+    
+
+    <%- include("partials/nav.ejs") %>
+
+    <h1 id="recipes"> Recipes</h1>
+
+    <div id="mainContainer">
+        <div id="favorites">
+            <span>Favorites <img id="heart" src="img/heart.png"></span>
+            <div id="meals">
+                <figure id="meal1">
+
+                </figure>
+
+                <figure id="meal2">
+
+                </figure>
+
+                <figure id="meal1">
+                    
+                </figure>
+            </div>
+        </div>
+
+        <div id="searchBox">
+            <input id="searchIn" type="text" placeholder="Enter a Meal">
+
+            <button id="searchBtn">Search</button>
+
+        </div>
+
+    </div>
+</body>
+</html>
