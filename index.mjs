@@ -102,7 +102,7 @@ app.get('/mealplanweek', async (req, res) => {
     let date2 = new Date(req.query.date);
     date.setDate(date.getDate() -1);
     date2.setDate(date2.getDate() + 7);
-    let sql = `SELECT name, instructions, thumbnail, recipe_id, date, meal_type 
+    let sql = `SELECT name, instructions, thumbnail, plan_id, recipe_id, date, meal_type 
                 FROM recipe
                 NATURAL JOIN meal_plan
                 WHERE user_id = 1 
@@ -188,7 +188,7 @@ app.post('/deletemealplan', async (req, res) => {
     let sql = `DELETE FROM meal_plan WHERE plan_id = ?`;
     let sqlParams = [plan_id];
     await conn.query(sql, sqlParams);
-    res.redirect('/admin');
+    res.redirect(req.get('referer'));
 });
 
 app.post('/login', async (req, res) => {
