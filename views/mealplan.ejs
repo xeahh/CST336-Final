@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="meal-plan">
+<body>
+
+    <%- include("partials/nav.ejs") %>
+<div class="meal-plan">
+
 
     <h2>Weekly Meal Plan</h2>
 
@@ -24,13 +28,13 @@
      <div style="background-color: white; display: flex; margin-top: 20px; padding: 20px; border-radius: 20px; width: 90%; justify-content: center; align-content: space-evenly;">
         <table class="meal-plan-table">
             <tr>
-                <th id="day1">Sunday</th>
-                <th id="day2">Monday</th>
-                <th id="day3">Tuesday</th>
-                <th id="day4">Wednesday</th>
-                <th id="day5">Thursday</th>
-                <th id="day6">Friday</th>
-                <th id="day7">Saturday</th>
+                <th class="day" id="day1">Sunday</th>
+                <th class="day" id="day2">Monday</th>
+                <th class="day" id="day3">Tuesday</th>
+                <th class="day" id="day4">Wednesday</th>
+                <th class="day" id="day5">Thursday</th>
+                <th class="day" id="day6">Friday</th>
+                <th class="day" id="day7">Saturday</th>
             </tr>            
             <tr>
                 <td><img id="breakfast1" class="meal" src="imgs/food.jpg"></td>
@@ -64,6 +68,28 @@
         </table>
      </div>
 
+     <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close">&times;</span>
+            <h2>Select a Recipe</h2>
+            <div style="display: flex;">
+                <% for (let i of recipes) { %>
+                    <div class="recipe-item" data-recipe-id="<%= i.recipe_id %>" data-recipe-img="<%= i.thumbnail %>"><%= i.name %></div>
+                <% } %>
+            </div>
+        </div>
+      </div>
+
+      <div id="recipeDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close2">&times;</span>
+            <div id="recipeDetails"></div>
+            <div id="mealplanid">
+            </div>
+        </div>
+      </div>
+
+    </div>
      <script src="js/mealplanscript.js"></script>
         
 </body>
