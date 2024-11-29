@@ -129,7 +129,7 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
 
 // Post requests
 
-app.post('/signup/in', async(req, res) => { 
+app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
     console.log(username,password);
@@ -161,7 +161,7 @@ app.post('/signup/in', async(req, res) => {
         console.log("run1");
         res.render('home.ejs');
     } else {
-        res.redirect("signup.ejs");
+        res.redirect("/signup");
     }
 });
 
