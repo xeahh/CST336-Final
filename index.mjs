@@ -39,7 +39,11 @@ const conn = await pool.getConnection();
 
 //routes
 app.get('/', (req, res) => {
-   res.render('landing.ejs');
+    if(req.session.authenticated) {
+        res.render('home.ejs', {username: req.session.username});
+    } else {
+        res.render('landing.ejs');
+    }
 });
 
 app.get('/profile',isAuthenticated, (req, res) => {

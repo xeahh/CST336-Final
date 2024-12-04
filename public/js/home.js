@@ -3,7 +3,6 @@ today = today.toLocaleDateString('en-US');
 console.log(today);
 
 document.addEventListener("DOMContentLoaded", function() {
-    // document.querySelector("#welcome").innerHTML = "";
     getTodaysMeals(today);
 });
 
