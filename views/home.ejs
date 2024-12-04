@@ -9,23 +9,24 @@
 <body>
     <%- include("partials/nav.ejs") %>
 
-    <h1 id="welcome">Welcome back,<br> [user]!</h1>
+    <h1 id="welcome">Welcome back,<br> <%= username %>!</h1>
 
     <div id="today">
         <span>Today's Meals</span>
         <div id="meals">
-            <figure id="meal1">
+            <img id="meal1" data-meal-type="breakfast">
 
-            </figure>
+            </img>
 
-            <figure id="meal2">
+            <img id="meal2" data-meal-type="lunch">
 
-            </figure>
+            </img>
 
-            <figure id="meal1">
+            <img id="meal1" data-meal-type="breakfast">
                 
-            </figure>
+            </img>
         </div>
     </div>
+    <script src="js/home.js"></script>
 </body>
 </html>
