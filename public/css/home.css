@@ -113,23 +113,12 @@ span{
 
 
 
-#meal1{
-    background-color: #4CAF50;
-    width: 200px;
-    height: 150px;
+#meal{
+    width: 180px;
+    height: 180px;
     margin: 0;
     margin-bottom: 40px;
     border-radius: 30px;
     
-}
-
-#meal2{
-    background-color: #A5D6A7;
-    width: 200px;
-    height: 150px;
-    margin: 0;
-    margin-bottom: 40px;
-    border-radius: 30px;
-
 }
 
