@@ -79,9 +79,12 @@ app.get('/groceryList',isAuthenticated, (req, res) => {
     res.render('groceryList.ejs');
 });
 
-app.get('/recipes',isAuthenticated, (req, res) => {
-    res.render('recipes.ejs');
-});
+
+// app.get('/recipes', (req, res) => {
+//     res.render('recipes.ejs');
+// });
+
+
 
 app.get('/home', isAuthenticated, (req, res) => {    
     res.render('home.ejs');
@@ -93,11 +96,14 @@ app.get('/mealplan', isAuthenticated, async (req, res) => {
     res.render('mealplan.ejs', {recipes: rows});
 });
 
-app.get('/recipe', isAuthenticated, async (req, res) => {
-    let recipe_id = req.query.recipe_id;
-    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
-    const [rows] = await conn.query(sql, [recipe_id]);
-    res.send(rows[0]);
+app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
+    // let recipe_id = req.query.recipe_id;
+    let sql = `SELECT name
+                FROM recipe 
+                ORDER BY name`;
+    const [rows] = await conn.query(sql);
+ 
+    res.render('recipes.ejs',{rows});
 });
 
 // Fetches the meal plan for the week
