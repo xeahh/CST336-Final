@@ -15,7 +15,7 @@
 
     <div id="mainContainer">
         <div id="favorites">
-            <span>Favorites <img id="heart" src="img/heart.png"></span>
+            <span>Favorites <img id="heart" src="/img/heart.png"></span>
             <div id="meals">
                 <figure id="meal1">
 
@@ -32,11 +32,15 @@
         </div>
 
         <div id="searchBox">
-            <input id="searchIn" type="text" placeholder="Enter a Meal">
-
-            <button id="searchBtn">Search</button>
+         
+            <% for(let row of rows){%>
+                <button id="recipeBox">
+                    <%= row.name %>
+                </button>
+            <%}%>
 
         </div>
+        
 
     </div>
 </body>

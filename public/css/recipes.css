@@ -103,6 +103,7 @@ img{
     background-color: white;
     border-radius: 30px;
     width: 40%;
+    height: fit-content;
     border-color: black;
     padding-bottom: 30px;
     border-style: solid;
@@ -117,15 +118,9 @@ img{
     align-items: center;
     margin:30px;
     width: 40%;
-    height: 300px;
-    background-color: #FF9800;
-    border-radius: 30px;
-    border-color: black;
+    height: auto;
     padding-bottom: 30px;
-    border-style: solid;
     border-width: 2px;
-    border-color: black;
-
 }
 
 #searchBtn{
@@ -196,3 +191,16 @@ span{
 
 }
 
+#recipeBox{
+    display: grid;
+    align-items: center;
+    background-color: #FF9800;
+    width: 70%;
+    height: 40px;
+    border-radius: 5px;
+    text-align: center;
+    font-family:'Gotham', sans-serif;
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
