@@ -96,6 +96,13 @@ app.get('/mealplan', isAuthenticated, async (req, res) => {
     res.render('mealplan.ejs', {recipes: rows});
 });
 
+app.get('/recipe', isAuthenticated, async (req, res) => {
+    let recipe_id = req.query.recipe_id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.send(rows[0]);
+});
+
 app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
     // let recipe_id = req.query.recipe_id;
     let sql = `SELECT name
