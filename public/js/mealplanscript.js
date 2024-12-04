@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         displayDays(today);
 
         // Display the meal plan
-        displayMealPlan(startDate);
+        displayMealPlan(today);
     }
 });
 
@@ -95,8 +95,6 @@ function displayDays(startDate) {
 
 // Display meal plan
 async function displayMealPlan(startDate) {
-    startDate = startDate.toISOString().split('T')[0]; 
-
     for (meal of mealElements) {
         meal.src = "/imgs/nomealselected.png";
         meal.setAttribute("data-recipe-id", "");
@@ -127,6 +125,7 @@ async function displayMealPlan(startDate) {
                 mealElement.setAttribute("data-recipe-id", recipeId);
                 mealElement.setAttribute("data-meal-id", mealPlanId);
                 mealElement.src = recipeThumbnail;
+                console.log(recipeThumbnail);
             }
         });
     });
@@ -209,7 +208,7 @@ recipeItems.forEach(function(item) {
 });
 
 async function postSelectedRecipe(recipeId, date, mealType) {
-    await fetch(`/mealplan?user_id=1&recipe_id=${recipeId}&date=${date}&meal_type=${mealType}`, {
+    await fetch(`/mealplan?recipe_id=${recipeId}&date=${date}&meal_type=${mealType}`, {
         method: "POST"
     }); 
 
