@@ -112,7 +112,6 @@ app.get('/mealplanweek', isAuthenticated, async (req, res) => {
                 WHERE user_id = ? 
                 AND (date > ? AND date < ?)`; // change user_id to logged in user id
     const [rows] = await conn.query(sql, [req.session.userid,date, date2]);
-    console.log("meal:"+rows[0])
     res.send(rows);
 });
 
@@ -137,7 +136,6 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
 app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
-    console.log(username,password);
 
     let saltRounds = 10;
     let passcheck = 0;
@@ -148,13 +146,10 @@ app.post('/signup', async(req, res) => {
     FROM user 
     WHERE username = ?`;
     const [rows] = await conn.query(sql, [username]);
-    console.log(rows.length);
     if(rows.length > 0) { 
         passcheck = 1; 
     }
 
-    console.log("passcheck: "+passcheck);
-    console.log("username/pass: "+username,hash);
 
     if(passcheck==0) {
         req.session.authenticated = true;
