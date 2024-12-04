@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include("partials/head.ejs") %>
     <link href="css/recipes.css" rel="stylesheet">
     <title>Recipes</title>
 </head>
@@ -31,14 +30,15 @@
             </div>
         </div>
 
-        <div id="searchBox">
-         
-            <% for(let row of rows){%>
-                <button id="recipeBox">
-                    <%= row.name %>
-                </button>
-            <%}%>
-
+        <div id="allRecipes">
+            <button id="add">+ Add Recipe</button>
+            <div id="recipeBox">
+                <% for(let row of rows){%>
+                    <button id="recipeBtn">
+                        <%= row.name %>
+                    </button>
+                <%}%>
+            </div>
         </div>
         
 
