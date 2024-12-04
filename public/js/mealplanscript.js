@@ -209,7 +209,7 @@ recipeItems.forEach(function(item) {
 });
 
 async function postSelectedRecipe(recipeId, date, mealType) {
-    await fetch(`/mealplan?user_id=1&recipe_id=${recipeId}&date=${date}&meal_type=${mealType}`, {
+    await fetch(`/mealplan?recipe_id=${recipeId}&date=${date}&meal_type=${mealType}`, {
         method: "POST"
     }); 
 
