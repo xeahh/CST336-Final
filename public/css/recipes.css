@@ -1,0 +1,146 @@
+body{
+    background-color: #F5F5F5;
+    margin: 0;
+}
+
+#heart{
+    width: 25px;
+    top: 0px;
+    right: 0px;
+    
+}
+
+
+#recipes{
+    text-align: center;
+    font-family:'Gotham', sans-serif;
+    font-size: 70px;
+    font-weight: 400;
+    padding-top: 10px;
+   
+   
+}
+
+img{
+    height:fit-content;
+
+}
+
+#mainContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+}
+
+#favorites{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 30px;;
+    background-color: white;
+    border-radius: 30px;
+    width: 40%;
+    height: fit-content;
+    border-color: black;
+    padding-bottom: 30px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+
+}
+#allRecipes{
+    display: flex;
+    flex-direction: column;
+    margin:30px;
+    width: 40%;
+    height: auto;
+    padding-bottom: 30px;
+    border-width: 2px;
+}
+#recipeBox{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: stretch;
+    border-radius: 30px;
+    margin:auto;
+    width: 100%;
+    height: auto;
+    padding-top:0;
+    margin-top:20px;
+    border-width: 2px;
+
+}
+
+
+span{
+    align-self: center;
+    font-family:'Gotham', sans-serif;
+    font-size: 35px;
+    font-weight: 500;
+    text-align: start;
+    width: 80%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  
+    
+}
+
+#meals{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-radius: 30px;
+    gap: 15px;
+}
+
+#meal1{
+    background-color: #4CAF50;
+    width: 80%;
+    height: 150px;
+    margin: 0;
+    margin-bottom: 40px;
+    border-radius: 30px;
+    margin: auto;
+    
+}
+
+#meal2{
+    background-color: #A5D6A7;
+    width: 80%;
+    height: 150px;
+    margin: 0;
+    margin-bottom: 40px;
+    border-radius: 30px;
+    margin: auto;
+
+
+}
+
+#recipeBtn{
+    display: grid;
+    align-items: center;
+    background-color: #FF9800;
+    width: auto;
+    height: 40px;
+    border-radius: 5px;
+    text-align: center;
+    font-family:'Gotham', sans-serif;
+    font-size:100%;
+    font-weight: 500;
+    margin-bottom: 8px;
+    margin-right: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+#add{
+    width: 100%;
+    height: 40px;
+    font-family:'Gotham', sans-serif;
+    font-size:100%;
+    background-color: #ffffff;
+    border-radius: 5px;
+
+
+}

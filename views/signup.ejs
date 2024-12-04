@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="landing" style="background-color: #F5F5F5;">
+    <div class="box">
+        
+        <form id="form1" style="display: flex; justify-content: center; flex-direction: column; align-items: center;" action="/signup" method="POST">
+            <div class="signup" style="display: flex; flex-direction: column; width: 200px;">
+                <input maxlength="32" placeholder="Username" type="text" name="username" required>
+                <input placeholder="Password" type="password" name="password" required>
+                <input placeholder="Confirm Password" name="pass2" type="password" required>
+            </div>
+            <div>
+                <button class="button" style="background-color: #4caf50; width: 200px; margin: 20px;">Sign up</button>
+            </div>
+        </form>
+        
+        
+        <div>
+            Already have an account? <a href="login" style="text-decoration: none; color: #4caf50;">Login</a>
+        </div>
+       
+    </div>
+    <script src="/js/checkpassword.js"></script>
+</body>
+</html>

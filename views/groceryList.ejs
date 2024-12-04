@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("partials/head.ejs") %>
+    <link href="css/groceryList.css" rel="stylesheet">
+    <title>Grocery List</title>
+</head>
+<body>
+    <%- include("partials/nav.ejs") %>
+
+    <h1 id="grocery">Grocery List</h1>
+
+    <div id="gList">
+        <label class="g1">
+            <div class="itemRadio">
+                <input name ="groceryItem" type="radio">
+                <span class="item">Grocery Item</span>
+            </div>
+            <span class="qty">Qty: </span>
+
+        </label> <br>
+        <label class="g1">
+            <div class="itemRadio">
+                <input name ="groceryItem" type="radio">
+                <span class="item">Grocery Item</span>
+            </div>
+            <span class="qty">Qty: </span>
+
+        </label> <br>
+        <label class="g1">
+            <div class="itemRadio">
+                <input name ="groceryItem" type="radio">
+                <span class="item">Grocery Item</span>
+            </div>
+            <span class="qty">Qty: </span>
+
+        </label> <br>
+        <button id="add">
+            +
+        </button>
+        
+    </div>
+</body>
+</html>

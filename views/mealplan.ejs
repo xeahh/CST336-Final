@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("partials/head.ejs") %>
+    <title>Final</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <%- include("partials/nav.ejs") %>
+<div class="meal-plan">
+
+
+    <h2>Weekly Meal Plan</h2>
+
+    <!-- week dates -->
+    <div style="display: flex;">
+        <div id="startdate"></div> 
+        <input id="newstartdate" type="date">
+        <div>&nbsp;-&nbsp;</div>
+        <div id="enddate"></div>&nbsp;
+        <button id="submit" class="pencil"><i class="fa fa-pencil"></i></button>
+    </div>
+
+    <!-- meal plan -->
+     <div style="background-color: white; display: flex; margin-top: 20px; padding: 20px; border-radius: 20px; width: 90%; justify-content: center; align-content: space-evenly;">
+        <table class="meal-plan-table">
+            <tr>
+                <th class="day" id="day1">Sunday</th>
+                <th class="day" id="day2">Monday</th>
+                <th class="day" id="day3">Tuesday</th>
+                <th class="day" id="day4">Wednesday</th>
+                <th class="day" id="day5">Thursday</th>
+                <th class="day" id="day6">Friday</th>
+                <th class="day" id="day7">Saturday</th>
+            </tr>            
+            <tr>
+                <td><img id="breakfast1" class="meal" ></td>
+                <td><img id="breakfast2" class="meal" ></td>
+                <td><img id="breakfast3" class="meal" ></td>
+                <td><img id="breakfast4" class="meal" ></td>
+                <td><img id="breakfast5" class="meal" ></td>
+                <td><img id="breakfast6" class="meal" ></td>
+                <td><img id="breakfast7" class="meal" ></td>
+            </tr>
+            <tr>
+                <td><img id="lunch1" class="meal" ></td>
+                <td><img id="lunch2" class="meal" ></td>
+                <td><img id="lunch3" class="meal" ></td>
+                <td><img id="lunch4" class="meal" ></td>
+                <td><img id="lunch5" class="meal" ></td>
+                <td><img id="lunch6" class="meal" ></td>
+                <td><img id="lunch7" class="meal" ></td>
+            </tr>
+            <tr>
+                <td><img id="dinner1" class="meal" ></td>
+                <td><img id="dinner2" class="meal" ></td>
+                <td><img id="dinner3" class="meal" ></td>
+                <td><img id="dinner4" class="meal" ></td>
+                <td><img id="dinner5" class="meal" ></td>
+                <td><img id="dinner6" class="meal" ></td>
+                <td><img id="dinner7" class="meal" ></td>
+            </tr>
+            
+            
+        </table>
+     </div>
+
+     <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close">&times;</span>
+            <h2>Select a Recipe</h2>
+            <div style="display: flex;">
+                <% for (let i of recipes) { %>
+                    <div class="recipe-item" data-recipe-id="<%= i.recipe_id %>" data-recipe-img="<%= i.thumbnail %>"><%= i.name %></div>
+                <% } %>
+            </div>
+        </div>
+      </div>
+
+      <div id="recipeDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close2">&times;</span>
+            <div id="recipeDetails"></div>
+            <div id="mealplanid">
+            </div>
+        </div>
+      </div>
+
+    </div>
+     <script src="js/mealplanscript.js"></script>
+        
+</body>
+</html>

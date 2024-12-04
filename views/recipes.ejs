@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("partials/head.ejs") %>
+    <link href="css/recipes.css" rel="stylesheet">
+    <title>Recipes</title>
+</head>
+<body>
+    
+
+    <%- include("partials/nav.ejs") %>
+
+    <h1 id="recipes"> Recipes</h1>
+
+    <div id="mainContainer">
+        <div id="favorites">
+            <span>Favorites <img id="heart" src="/img/heart.png"></span>
+            <div id="meals">
+                <figure id="meal1">
+
+                </figure>
+
+                <figure id="meal2">
+
+                </figure>
+
+                <figure id="meal1">
+                    
+                </figure>
+            </div>
+        </div>
+
+        <div id="allRecipes">
+            <button id="add">+ Add Recipe</button>
+            <div id="recipeBox">
+                <% for(let row of rows){%>
+                    <button id="recipeBtn">
+                        <%= row.name %>
+                    </button>
+                <%}%>
+            </div>
+        </div>
+        
+
+    </div>
+</body>
+</html>
