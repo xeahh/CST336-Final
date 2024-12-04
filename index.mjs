@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
    res.render('landing.ejs');
 });
 
-app.get('/profile', (req, res) => {
+app.get('/profile',isAuthenticated, (req, res) => {
     if(req.session.authenticated) {
         res.render('profile.ejs');
     } else {
@@ -58,7 +58,7 @@ app.get('/profile', (req, res) => {
     res.render('settings.ejs');
  });
 
- app.get('/logout', (req, res) => {
+ app.get('/logout', isAuthenticated,(req, res) => {
     req.session.destroy();
     res.redirect('/');
  });
@@ -67,15 +67,15 @@ app.get('/login', (req, res) => {
     res.render('login.ejs');
  });
 
-app.get('/signup', (req, res) => { 
+app.get('/signup',isAuthenticated, (req, res) => { 
     res.render('signup.ejs');
 });
 
-app.get('/groceryList', (req, res) => {
+app.get('/groceryList',isAuthenticated, (req, res) => {
     res.render('groceryList.ejs');
 });
 
-app.get('/recipes', (req, res) => {
+app.get('/recipes',isAuthenticated, (req, res) => {
     res.render('recipes.ejs');
 });
 
@@ -105,13 +105,14 @@ app.get('/mealplanweek', isAuthenticated, async (req, res) => {
     let sql = `SELECT name, instructions, thumbnail, plan_id, recipe_id, date, meal_type 
                 FROM recipe
                 NATURAL JOIN meal_plan
-                WHERE user_id = 1 
+                WHERE user_id = ? 
                 AND (date > ? AND date < ?)`; // change user_id to logged in user id
-    const [rows] = await conn.query(sql, [date, date2]);
+    const [rows] = await conn.query(sql, [req.session.userid,date, date2]);
+    console.log("meal:"+rows[0])
     res.send(rows);
 });
 
-app.get('/admin', async (req, res) => {
+app.get('/admin', isAuthenticated,async (req, res) => {
     let sql = `SELECT * FROM user`;
     const [rows] = await conn.query(sql);
     let sql2 = `SELECT * FROM recipe`;
@@ -154,6 +155,7 @@ app.post('/signup', async(req, res) => {
     if(passcheck==0) {
         req.session.authenticated = true;
         req.session.username = username;
+        req.session.userid = rows[0].user_id;
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
@@ -166,11 +168,11 @@ app.post('/signup', async(req, res) => {
     }
 });
 
-app.post('/mealplan', async (req, res) => {
+app.post('/mealplan', isAuthenticated,async (req, res) => {
         let recipe_id = req.query.recipe_id;
         let date = req.query.date;
-        let user_id = req.query.user_id;
         let meal_type = req.query.meal_type;
+        let user_id = req.session.userid;
         let sql = `INSERT INTO meal_plan (user_id, recipe_id, date, meal_type)
         VALUES (?,?,?,?)`;
         let sqlParams = [user_id,recipe_id,date,meal_type];
@@ -178,7 +180,7 @@ app.post('/mealplan', async (req, res) => {
         res.redirect('/mealplan');
 });
 
-app.post('/deletemealplan', async (req, res) => {
+app.post('/deletemealplan',isAuthenticated,async (req, res) => {
     let plan_id = req.body.plan_id;
     console.log('Received Plan ID to delete:', plan_id);
 
@@ -213,6 +215,8 @@ app.post('/login', async (req, res) => {
         // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
         req.session.authenticated = true;
         req.session.username = username;
+        req.session.userid = rows[0].user_id;
+        console.log("user id: "+req.session.userid)
         res.render('home.ejs', {username: req.session.username});
     } else {
         res.redirect("/login");
