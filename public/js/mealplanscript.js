@@ -95,8 +95,6 @@ function displayDays(startDate) {
 
 // Display meal plan
 async function displayMealPlan(startDate) {
-    startDate = startDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric'}); 
-
     for (meal of mealElements) {
         meal.src = "/imgs/nomealselected.png";
         meal.setAttribute("data-recipe-id", "");
