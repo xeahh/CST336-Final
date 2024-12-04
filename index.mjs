@@ -51,7 +51,7 @@ app.get('/profile', (req, res) => {
  });
 
  app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home.ejs');
+    res.render('home.ejs', {username: req.session.username});
  });
 
  app.get('/settings', isAuthenticated, (req, res) => {
@@ -79,17 +79,17 @@ app.get('/recipes', (req, res) => {
     res.render('recipes.ejs');
 });
 
-app.get('/home', (req, res) => {    
+app.get('/home', isAuthenticated, (req, res) => {    
     res.render('home.ejs');
 });
 
-app.get('/mealplan', async (req, res) => {
+app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
     res.render('mealplan.ejs', {recipes: rows});
 });
 
-app.get('/recipe', async (req, res) => {
+app.get('/recipe', isAuthenticated, async (req, res) => {
     let recipe_id = req.query.recipe_id;
     let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
     const [rows] = await conn.query(sql, [recipe_id]);
@@ -97,7 +97,7 @@ app.get('/recipe', async (req, res) => {
 });
 
 // Fetches the meal plan for the week
-app.get('/mealplanweek', async (req, res) => {
+app.get('/mealplanweek', isAuthenticated, async (req, res) => {
     let date = new Date(req.query.date);
     let date2 = new Date(req.query.date);
     date.setDate(date.getDate() -1);
@@ -129,7 +129,7 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
 
 // Post requests
 
-app.post('/signup/in', async(req, res) => { 
+app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
     console.log(username,password);
@@ -153,15 +153,16 @@ app.post('/signup/in', async(req, res) => {
 
     if(passcheck==0) {
         req.session.authenticated = true;
+        req.session.username = username;
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
         console.log("run1");
-        res.render('home.ejs');
+        res.render('home.ejs', {username: req.session.username});
     } else {
-        res.redirect("signup.ejs");
+        res.redirect("/signup");
     }
 });
 
@@ -211,7 +212,8 @@ app.post('/login', async (req, res) => {
     if(match) {
         // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
         req.session.authenticated = true;
-        res.render('home.ejs');
+        req.session.username = username;
+        res.render('home.ejs', {username: req.session.username});
     } else {
         res.redirect("/login");
     }
@@ -251,5 +253,5 @@ function isAuthenticated(req, res, next) {
 }
 
 app.listen(3011, ()=>{
-    console.log("Express server running")
+    console.log("Express server running on port 3011");
 })

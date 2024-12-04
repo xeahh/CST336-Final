@@ -100,6 +100,7 @@ async function displayMealPlan(startDate) {
     for (meal of mealElements) {
         meal.src = "/imgs/nomealselected.png";
         meal.setAttribute("data-recipe-id", "");
+        meal.setAttribute("data-meal-id", "");
     }
 
     await fetch(`/mealplanweek?date=${startDate}`, {
