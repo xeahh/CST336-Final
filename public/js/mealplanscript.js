@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         displayDays(today);
 
         // Display the meal plan
-        displayMealPlan(startDate);
+        displayMealPlan(today);
     }
 });
 
@@ -95,7 +95,7 @@ function displayDays(startDate) {
 
 // Display meal plan
 async function displayMealPlan(startDate) {
-    startDate = startDate.toISOString().split('T')[0]; 
+    startDate = startDate.toLocaleDateString('en-US', {month: 'long', day: 'numeric'}); 
 
     for (meal of mealElements) {
         meal.src = "/imgs/nomealselected.png";
@@ -127,6 +127,7 @@ async function displayMealPlan(startDate) {
                 mealElement.setAttribute("data-recipe-id", recipeId);
                 mealElement.setAttribute("data-meal-id", mealPlanId);
                 mealElement.src = recipeThumbnail;
+                console.log(recipeThumbnail);
             }
         });
     });
