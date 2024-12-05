@@ -98,7 +98,7 @@ app.get('/mealplan', isAuthenticated, async (req, res) => {
 
 app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
     // let recipe_id = req.query.recipe_id;
-    let sql = `SELECT name
+    let sql = `SELECT *
                 FROM recipe 
                 ORDER BY name`;
     const [rows] = await conn.query(sql);

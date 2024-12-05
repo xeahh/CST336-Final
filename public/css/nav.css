@@ -7,12 +7,12 @@
     justify-content: space-around;
     margin: auto;
     position: relative;
-    height: 40px;
+    height: 35px;
 }
 nav{
     text-align: center;
     background-color: white;
-    height: 40px;
+    height: 30px;
     text-decoration: none;
     padding-top: 10px;
     padding-bottom: 10px;
