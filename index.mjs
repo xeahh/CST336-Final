@@ -237,6 +237,8 @@ app.post('/signup', async(req, res) => {
         const [newUser] = await conn.query(sql2, [username]);
         req.session.userid = newUser[0].user_id;
 
+        const imageUrl = await getRandomFoodImage(); // get random pfp img when signing up
+        req.session.picture = imageUrl;
         res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
         res.redirect("/signup");
@@ -252,7 +254,7 @@ app.post('/mealplan', isAuthenticated,async (req, res) => {
         VALUES (?,?,?,?)`;
         let sqlParams = [user_id,recipe_id,date,meal_type];
         const [rows]=await conn.query(sql, sqlParams);
-        res.redirect('/mealplan', {picture: req.session.picture});
+        res.redirect('/mealplan');
 });
 
 app.post('/deletemealplan',isAuthenticated,async (req, res) => {
@@ -304,7 +306,7 @@ app.post('/login', async (req, res) => {
  app.post('/recipe/new', isAuthenticated, async (req, res) => {
     let name = req.body.name;
     let instructions = req.body.instructions;
-    let picUrl = req.body.picture;
+    let picUrl = req.body.thumbnail;
 
     let sql = `INSERT INTO recipe
     (name, instructions, thumbnail)
