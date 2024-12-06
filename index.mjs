@@ -84,9 +84,9 @@ app.get('/signup', (req, res) => {
     res.render('signup.ejs');
 });
 
-app.get('/recipes',isAuthenticated, (req, res) => {
-    res.render('recipes.ejs', {picture: req.session.picture});
-
+// app.get('/recipes',isAuthenticated, (req, res) => {
+//     res.render('recipes.ejs', {picture: req.session.picture});
+// })
 app.get('/groceryList',isAuthenticated, async(req, res) => {
     let id = req.session.userid;
     let date = new Date();
@@ -165,7 +165,7 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
                 ORDER BY name`;
     const [rows] = await conn.query(sql);
  
-    res.render('recipes.ejs',{rows});
+    res.render('recipes.ejs',{rows,picture: req.session.picture});
 
 });
 
@@ -286,11 +286,12 @@ app.post('/login', async (req, res) => {
     let match = await bcrypt.compare(password, passwordHash);
 
     if(match) {
+        const imageUrl = await getRandomFoodImage();
         // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
         req.session.authenticated = true;
         req.session.username = username;
         req.session.userid = rows[0].user_id;
-
+        req.session.picture = imageUrl;
         console.log("user id: "+req.session.userid)
         res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
@@ -344,3 +345,4 @@ app.get('/random/food', async (req, res) => {
 
 app.listen(3011, ()=>{
     console.log("Express server running on port 3011");
+})
