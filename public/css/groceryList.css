@@ -1,6 +1,7 @@
 body{
     background-color: #F5F5F5;
     margin: 0;
+    
 }
 
 #grocery{
@@ -98,12 +99,3 @@ input[type=checkbox]{
 
 }
 
-#newItem{
-    
-    margin: auto;
-    font-family:'Gotham', sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    color: #FF9800;
-
-}
