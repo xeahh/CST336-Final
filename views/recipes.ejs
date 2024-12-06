@@ -35,7 +35,9 @@
             </div>
         </div>
         <div id="allRecipes">
-            <button type="button" data-toggle="modal" data-target="#exampleModal" id="add">+ Add Recipe</button>
+          <form action="/recipe/new" method="GET">
+            <button type="button" id="add">+ Add Recipe</button>
+          </form> 
             <div id="recipeBox">
                 <% for(let row of rows){%>
                   <button type="button"  class="mealLink" data-toggle="modal" data-target="#exampleModalLong" href="#" mealId="<%= row.name%>">
