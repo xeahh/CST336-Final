@@ -77,105 +77,42 @@ app.get('/signup', (req, res) => {
 
 app.get('/groceryList',isAuthenticated, async(req, res) => {
     let id = req.session.userid;
+    let date = new Date();
+    let month =date.getMonth()+1
+    let day = date.getDate()
+    date=date.getFullYear()+"-"+month+"-"+day;
 
-    let sql = `SELECT * FROM meal_plan WHERE user_id = ?`;
-    const [rows] = await conn.query(sql,[id]);
+    let sql = `SELECT * FROM meal_plan WHERE user_id = ? AND date = ?`;
+    const [rows] = await conn.query(sql,[id,date]);
+
+    let allmeal = []
+    for(let row of rows){
+        allmeal.push(row.recipe_id)
+    }
 
     let ingredients = []
 
     if(rows.length>0){
-        for(let i=0;i<rows.length;i++){
+        for(let i of allmeal){
             let sql = `SELECT name FROM recipe WHERE recipe_id = ?`;
-            const [name1] = await conn.query(sql,[rows[i].recipe_id]);
+            const [name1] = await conn.query(sql,[i]);
 
             let url="http://www.themealdb.com/api/json/v1/1/search.php?s="+name1[0].name;
             let response2= await fetch(url);
             let data= await response2.json();
+            data.meals.filter(obj => {
+                for (let key in obj) {
+                  if (key.startsWith("strIngredient")) {
+                    if(obj[key].length>0){
+                    if (!ingredients.includes(obj[key])) {
+                        ingredients.push(obj[key]);
+                            }
+                        } 
+                  }
+                }
+                return false;
+              });
 
-            if(data.meals[0].strIngredient1.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient1)) {
-                    ingredients.push(data.meals[0].strIngredient1);
-                }
-            } if(data.meals[0].strIngredient2.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient2)) {
-                    ingredients.push(data.meals[0].strIngredient2);
-                }
-            }if(data.meals[0].strIngredient3.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient3)) {
-                    ingredients.push(data.meals[0].strIngredient3);
-                }
-            }if(data.meals[0].strIngredient4.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient4)) {
-                    ingredients.push(data.meals[0].strIngredient4);
-                }
-            }if(data.meals[0].strIngredient5.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient5)) {
-                    ingredients.push(data.meals[0].strIngredient5);
-                }
-            }
-            if(data.meals[0].strIngredient6.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient6)) {
-                    ingredients.push(data.meals[0].strIngredient6);
-                }
-            } if(data.meals[0].strIngredient7.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient7)) {
-                    ingredients.push(data.meals[0].strIngredient7);
-                }
-            }if(data.meals[0].strIngredient8.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient8)) {
-                    ingredients.push(data.meals[0].strIngredient8);
-                }
-            }if(data.meals[0].strIngredient9.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient9)) {
-                    ingredients.push(data.meals[0].strIngredient9);
-                }
-            }if(data.meals[0].strIngredient10.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient10)) {
-                    ingredients.push(data.meals[0].strIngredient10);
-                }
-            }
-            if(data.meals[0].strIngredient11.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient11)) {
-                    ingredients.push(data.meals[0].strIngredient11);
-                }
-            } if(data.meals[0].strIngredient12.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient12)) {
-                    ingredients.push(data.meals[0].strIngredient12);
-                }
-            }if(data.meals[0].strIngredient13.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient13)) {
-                    ingredients.push(data.meals[0].strIngredient13);
-                }
-            }if(data.meals[0].strIngredient14.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient14)) {
-                    ingredients.push(data.meals[0].strIngredient14);
-                }
-            }if(data.meals[0].strIngredient15.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient15)) {
-                    ingredients.push(data.meals[0].strIngredient15);
-                }
-            }
-            if(data.meals[0].strIngredient16.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient16)) {
-                    ingredients.push(data.meals[0].strIngredient16);
-                }
-            } if(data.meals[0].strIngredient17.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient17)) {
-                    ingredients.push(data.meals[0].strIngredient17);
-                }
-            }if(data.meals[0].strIngredient18.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient18)) {
-                    ingredients.push(data.meals[0].strIngredient18);
-                }
-            }if(data.meals[0].strIngredient19.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient19)) {
-                    ingredients.push(data.meals[0].strIngredient19);
-                }
-            }if(data.meals[0].strIngredient20.length>0){
-                if (!ingredients.includes(data.meals[0].strIngredient20)) {
-                    ingredients.push(data.meals[0].strIngredient20);
-                }
-            }
         }
     }
     let seen = new Set();
@@ -187,13 +124,11 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
         }
         return false;
     });
-    console.log(uniqueIngredients);
-
-
-    res.render('groceryList.ejs',{uniqueIngredients});
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    let nowMonth = months[month-1]
+    console.log(months[month-1])
+    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day});
 });
-
-
 // app.get('/recipes', (req, res) => {
 //     res.render('recipes.ejs');
 // });
@@ -232,7 +167,6 @@ app.get('/mealplanweek', isAuthenticated, async (req, res) => {
                 WHERE user_id = ? 
                 AND (date > ? AND date < ?)`; // change user_id to logged in user id
     const [rows] = await conn.query(sql, [req.session.userid,date, date2]);
-    console.log("meal:"+rows[0])
     res.send(rows);
 });
 
@@ -257,7 +191,6 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
 app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
-    console.log(username,password);
 
     let saltRounds = 10;
     let passcheck = 0;
@@ -273,8 +206,6 @@ app.post('/signup', async(req, res) => {
         passcheck = 1; 
     }
 
-    console.log("passcheck: "+passcheck);
-    console.log("username/pass: "+username,hash);
 
     if(passcheck==0) {
         req.session.authenticated = true;
@@ -285,7 +216,6 @@ app.post('/signup', async(req, res) => {
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
-        console.log("run1");
 
         // can now get the user_id from db
         let sql2 = `SELECT user_id
@@ -313,7 +243,6 @@ app.post('/mealplan', isAuthenticated,async (req, res) => {
 
 app.post('/deletemealplan',isAuthenticated,async (req, res) => {
     let plan_id = req.body.plan_id;
-    console.log('Received Plan ID to delete:', plan_id);
 
     if (!plan_id) {
         throw new Error('Invalid plan_id');
@@ -328,7 +257,7 @@ app.post('/deletemealplan',isAuthenticated,async (req, res) => {
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-    console.log(password);
+    
     let passwordHash = "";
     // let match = await bcrypt.compare(password, passwordHash);
     // change admin to user likely
@@ -347,7 +276,7 @@ app.post('/login', async (req, res) => {
         req.session.authenticated = true;
         req.session.username = username;
         req.session.userid = rows[0].user_id;
-        console.log("user id: "+req.session.userid)
+        
         res.render('home.ejs', {username: req.session.username});
     } else {
         res.redirect("/login");
