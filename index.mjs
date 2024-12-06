@@ -1,4 +1,5 @@
 import express from 'express';
+import fetch from 'node-fetch';
 import mysql from 'mysql2/promise'; // npm i express ejs mysql2
 import bcrypt from "bcrypt"; // make sure to do i bcrypt on fast comet terminal as well // npm i bcrypt
 import session from 'express-session'; // npm i express-session
@@ -48,9 +49,9 @@ app.get('/recipe/meal/:mealId', async (req, res) => {
 //routes
 app.get('/', (req, res) => {
     if(req.session.authenticated) {
-        res.render('home.ejs', {username: req.session.username});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
-        res.render('landing.ejs');
+        res.render('landing.ejs', {picture: req.session.picture});
     }
 });
 
@@ -63,7 +64,7 @@ app.get('/profile',isAuthenticated, (req, res) => {
  });
 
  app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home.ejs', {username: req.session.username});
+    res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
  });
 
  app.get('/settings', isAuthenticated, (req, res) => {
@@ -82,6 +83,9 @@ app.get('/login', (req, res) => {
 app.get('/signup', (req, res) => { 
     res.render('signup.ejs');
 });
+
+app.get('/recipes',isAuthenticated, (req, res) => {
+    res.render('recipes.ejs', {picture: req.session.picture});
 
 app.get('/groceryList',isAuthenticated, async(req, res) => {
     let id = req.session.userid;
@@ -135,7 +139,8 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     let nowMonth = months[month-1]
     console.log(months[month-1])
-    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day});
+    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day,picture: req.session.picture});
+
 });
 // app.get('/recipes', (req, res) => {
 //     res.render('recipes.ejs');
@@ -144,13 +149,13 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
 
 
 app.get('/home', isAuthenticated, (req, res) => {    
-    res.render('home.ejs');
+    res.render('home.ejs', {picture: req.session.picture});
 });
 
 app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
-    res.render('mealplan.ejs', {recipes: rows});
+    res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture});
 });
 
 app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
@@ -161,6 +166,7 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
     const [rows] = await conn.query(sql);
  
     res.render('recipes.ejs',{rows});
+
 });
 
 
@@ -192,7 +198,7 @@ app.get('/admin', isAuthenticated,async (req, res) => {
 });
 
 app.get('/recipe/new', isAuthenticated, (req, res) => {
-    res.render('newRecipe.ejs');
+    res.render('newRecipe.ejs', {picture: req.session.picture});
  });
 
 // Post requests
@@ -219,20 +225,19 @@ app.post('/signup', async(req, res) => {
     if(passcheck==0) {
         req.session.authenticated = true;
         req.session.username = username;
-        // req.session.userid = rows[0].user_id; // cant get user id yet, must be inserted first
+
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
-
-        // can now get the user_id from db
-        let sql2 = `SELECT user_id
-                    FROM user
-                    WHERE username = ?`;
+        
+        // works but need to get user_id
+        let sql2 = `SELECT user_id FROM user WHERE username = ?`;
         const [newUser] = await conn.query(sql2, [username]);
         req.session.userid = newUser[0].user_id;
-        res.render('home.ejs', {username: req.session.username});
+
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
         res.redirect("/signup");
     }
@@ -247,7 +252,7 @@ app.post('/mealplan', isAuthenticated,async (req, res) => {
         VALUES (?,?,?,?)`;
         let sqlParams = [user_id,recipe_id,date,meal_type];
         const [rows]=await conn.query(sql, sqlParams);
-        res.redirect('/mealplan');
+        res.redirect('/mealplan', {picture: req.session.picture});
 });
 
 app.post('/deletemealplan',isAuthenticated,async (req, res) => {
@@ -285,8 +290,9 @@ app.post('/login', async (req, res) => {
         req.session.authenticated = true;
         req.session.username = username;
         req.session.userid = rows[0].user_id;
-        
-        res.render('home.ejs', {username: req.session.username});
+
+        console.log("user id: "+req.session.userid)
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
         res.redirect("/login");
     }
@@ -306,7 +312,7 @@ app.post('/login', async (req, res) => {
     let sqlParams = [name, instructions, picUrl];
     const[rows] = await conn.query(sql, sqlParams);
 
-    res.render('newRecipe.ejs');
+    res.render('newRecipe.ejs', {picture: req.session.picture});
 });
 
 
@@ -324,14 +330,17 @@ function isAuthenticated(req, res, next) {
         res.redirect("/");
     }
 }
-
-// if fetching from api of a meal by name; fetchMealData(mealname), blank for all meals
-async function fetchMealData(mealName = '') {
-    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
+// function to get random food image
+async function getRandomFoodImage() {
+    const response = await fetch('https://foodish-api.com/api/');
     const data = await response.json();
-    return data;
+    return data.image;
 }
 
-app.listen(3012, ()=>{
-    console.log("Express server running on port 3012");
-})
+app.get('/random/food', async (req, res) => {
+    const imageUrl = await getRandomFoodImage();
+    res.render('randomFood.ejs', { imageUrl });
+});
+
+app.listen(3011, ()=>{
+    console.log("Express server running on port 3011");
