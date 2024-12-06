@@ -75,8 +75,122 @@ app.get('/signup', (req, res) => {
     res.render('signup.ejs');
 });
 
-app.get('/groceryList',isAuthenticated, (req, res) => {
-    res.render('groceryList.ejs');
+app.get('/groceryList',isAuthenticated, async(req, res) => {
+    let id = req.session.userid;
+
+    let sql = `SELECT * FROM meal_plan WHERE user_id = ?`;
+    const [rows] = await conn.query(sql,[id]);
+
+    let ingredients = []
+
+    if(rows.length>0){
+        for(let i=0;i<rows.length;i++){
+            let sql = `SELECT name FROM recipe WHERE recipe_id = ?`;
+            const [name1] = await conn.query(sql,[rows[i].recipe_id]);
+
+            let url="http://www.themealdb.com/api/json/v1/1/search.php?s="+name1[0].name;
+            let response2= await fetch(url);
+            let data= await response2.json();
+
+            if(data.meals[0].strIngredient1.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient1)) {
+                    ingredients.push(data.meals[0].strIngredient1);
+                }
+            } if(data.meals[0].strIngredient2.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient2)) {
+                    ingredients.push(data.meals[0].strIngredient2);
+                }
+            }if(data.meals[0].strIngredient3.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient3)) {
+                    ingredients.push(data.meals[0].strIngredient3);
+                }
+            }if(data.meals[0].strIngredient4.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient4)) {
+                    ingredients.push(data.meals[0].strIngredient4);
+                }
+            }if(data.meals[0].strIngredient5.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient5)) {
+                    ingredients.push(data.meals[0].strIngredient5);
+                }
+            }
+            if(data.meals[0].strIngredient6.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient6)) {
+                    ingredients.push(data.meals[0].strIngredient6);
+                }
+            } if(data.meals[0].strIngredient7.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient7)) {
+                    ingredients.push(data.meals[0].strIngredient7);
+                }
+            }if(data.meals[0].strIngredient8.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient8)) {
+                    ingredients.push(data.meals[0].strIngredient8);
+                }
+            }if(data.meals[0].strIngredient9.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient9)) {
+                    ingredients.push(data.meals[0].strIngredient9);
+                }
+            }if(data.meals[0].strIngredient10.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient10)) {
+                    ingredients.push(data.meals[0].strIngredient10);
+                }
+            }
+            if(data.meals[0].strIngredient11.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient11)) {
+                    ingredients.push(data.meals[0].strIngredient11);
+                }
+            } if(data.meals[0].strIngredient12.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient12)) {
+                    ingredients.push(data.meals[0].strIngredient12);
+                }
+            }if(data.meals[0].strIngredient13.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient13)) {
+                    ingredients.push(data.meals[0].strIngredient13);
+                }
+            }if(data.meals[0].strIngredient14.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient14)) {
+                    ingredients.push(data.meals[0].strIngredient14);
+                }
+            }if(data.meals[0].strIngredient15.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient15)) {
+                    ingredients.push(data.meals[0].strIngredient15);
+                }
+            }
+            if(data.meals[0].strIngredient16.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient16)) {
+                    ingredients.push(data.meals[0].strIngredient16);
+                }
+            } if(data.meals[0].strIngredient17.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient17)) {
+                    ingredients.push(data.meals[0].strIngredient17);
+                }
+            }if(data.meals[0].strIngredient18.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient18)) {
+                    ingredients.push(data.meals[0].strIngredient18);
+                }
+            }if(data.meals[0].strIngredient19.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient19)) {
+                    ingredients.push(data.meals[0].strIngredient19);
+                }
+            }if(data.meals[0].strIngredient20.length>0){
+                if (!ingredients.includes(data.meals[0].strIngredient20)) {
+                    ingredients.push(data.meals[0].strIngredient20);
+                }
+            }
+        }
+    }
+    let seen = new Set();
+    let uniqueIngredients = ingredients.filter(item => {
+    let lower = item.toLowerCase();
+    if (!seen.has(lower)) {
+        seen.add(lower);
+        return true;
+        }
+        return false;
+    });
+    console.log(uniqueIngredients);
+
+
+    res.render('groceryList.ejs',{uniqueIngredients});
 });
 
 
@@ -139,7 +253,7 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
  });
 
 // Post requests
-
+// Updated signup, can now create new user from sign up as intended
 app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
@@ -165,13 +279,20 @@ app.post('/signup', async(req, res) => {
     if(passcheck==0) {
         req.session.authenticated = true;
         req.session.username = username;
-        req.session.userid = rows[0].user_id;
+        // req.session.userid = rows[0].user_id; // cant get user id yet, must be inserted first
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
         console.log("run1");
+
+        // can now get the user_id from db
+        let sql2 = `SELECT user_id
+                    FROM user
+                    WHERE username = ?`;
+        const [newUser] = await conn.query(sql2, [username]);
+        req.session.userid = newUser[0].user_id;
         res.render('home.ejs', {username: req.session.username});
     } else {
         res.redirect("/signup");
@@ -266,6 +387,13 @@ function isAuthenticated(req, res, next) {
     }
 }
 
-app.listen(3011, ()=>{
-    console.log("Express server running on port 3011");
+// if fetching from api of a meal by name; fetchMealData(mealname), blank for all meals
+async function fetchMealData(mealName = '') {
+    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
+    const data = await response.json();
+    return data;
+}
+
+app.listen(3012, ()=>{
+    console.log("Express server running on port 3012");
 })
