@@ -11,34 +11,24 @@
     <h1 id="grocery">Grocery List</h1>
 
     <div id="gList">
-        <label class="g1">
-            <div class="itemRadio">
-                <input name ="groceryItem" type="radio">
-                <span class="item">Grocery Item</span>
-            </div>
-            <span class="qty">Qty: </span>
+        
+                <% for(let row of uniqueIngredients){%>
+                    <label class="g1">
+                        <div class="itemRadio">
+                            <input name ="groceryItem" type="checkbox">
+                            <span class="item"><%= row %></span>
+                        </div>
+                        <span class="qty">Qty:1 </span>
+                    </label> <br>
+                <%}%>
+            
 
-        </label> <br>
-        <label class="g1">
-            <div class="itemRadio">
-                <input name ="groceryItem" type="radio">
-                <span class="item">Grocery Item</span>
-            </div>
-            <span class="qty">Qty: </span>
-
-        </label> <br>
-        <label class="g1">
-            <div class="itemRadio">
-                <input name ="groceryItem" type="radio">
-                <span class="item">Grocery Item</span>
-            </div>
-            <span class="qty">Qty: </span>
-
-        </label> <br>
         <button id="add">
             +
         </button>
         
     </div>
+
+
 </body>
 </html>

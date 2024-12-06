@@ -1,4 +1,5 @@
 import express from 'express';
+import fetch from 'node-fetch';
 import mysql from 'mysql2/promise'; // npm i express ejs mysql2
 import bcrypt from "bcrypt"; // make sure to do i bcrypt on fast comet terminal as well // npm i bcrypt
 import session from 'express-session'; // npm i express-session
@@ -36,13 +37,21 @@ const conn = await pool.getConnection();
 // api spoonacular https://api.spoonacular.com/recipes/complexSearch?apiKey=17b87f4473434a9fab7d8268985d33c7
 
 
-
+app.get('/recipe/meal/:mealId', async (req, res) => {
+    let mealId = req.params.mealId;
+    let sql =  `SELECT *
+                FROM recipe
+                WHERE name = ? ` ;
+    let sqlParams = [mealId];
+    const [rows] = await conn.query(sql, sqlParams);
+    res.send(rows);
+ });
 //routes
 app.get('/', (req, res) => {
     if(req.session.authenticated) {
-        res.render('home.ejs', {username: req.session.username});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
-        res.render('landing.ejs');
+        res.render('landing.ejs', {picture: req.session.picture});
     }
 });
 
@@ -55,7 +64,7 @@ app.get('/profile',isAuthenticated, (req, res) => {
  });
 
  app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home.ejs', {username: req.session.username});
+    res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
  });
 
  app.get('/settings', isAuthenticated, (req, res) => {
@@ -75,11 +84,64 @@ app.get('/signup', (req, res) => {
     res.render('signup.ejs');
 });
 
-app.get('/groceryList',isAuthenticated, (req, res) => {
-    res.render('groceryList.ejs');
+// app.get('/recipes',isAuthenticated, (req, res) => {
+//     res.render('recipes.ejs', {picture: req.session.picture});
+// })
+app.get('/groceryList',isAuthenticated, async(req, res) => {
+    let id = req.session.userid;
+    let date = new Date();
+    let month =date.getMonth()+1
+    let day = date.getDate()
+    date=date.getFullYear()+"-"+month+"-"+day;
+
+    let sql = `SELECT * FROM meal_plan WHERE user_id = ? AND date = ?`;
+    const [rows] = await conn.query(sql,[id,date]);
+
+    let allmeal = []
+    for(let row of rows){
+        allmeal.push(row.recipe_id)
+    }
+
+    let ingredients = []
+
+    if(rows.length>0){
+        for(let i of allmeal){
+            let sql = `SELECT name FROM recipe WHERE recipe_id = ?`;
+            const [name1] = await conn.query(sql,[i]);
+
+            let url="http://www.themealdb.com/api/json/v1/1/search.php?s="+name1[0].name;
+            let response2= await fetch(url);
+            let data= await response2.json();
+            data.meals.filter(obj => {
+                for (let key in obj) {
+                  if (key.startsWith("strIngredient")) {
+                    if(obj[key].length>0){
+                    if (!ingredients.includes(obj[key])) {
+                        ingredients.push(obj[key]);
+                            }
+                        } 
+                  }
+                }
+                return false;
+              });
+
+        }
+    }
+    let seen = new Set();
+    let uniqueIngredients = ingredients.filter(item => {
+    let lower = item.toLowerCase();
+    if (!seen.has(lower)) {
+        seen.add(lower);
+        return true;
+        }
+        return false;
+    });
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    let nowMonth = months[month-1]
+    console.log(months[month-1])
+    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day,picture: req.session.picture});
+
 });
-
-
 // app.get('/recipes', (req, res) => {
 //     res.render('recipes.ejs');
 // });
@@ -87,13 +149,20 @@ app.get('/groceryList',isAuthenticated, (req, res) => {
 
 
 app.get('/home', isAuthenticated, (req, res) => {    
-    res.render('home.ejs');
+    res.render('home.ejs', {picture: req.session.picture});
 });
 
 app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
-    res.render('mealplan.ejs', {recipes: rows});
+    res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture});
+});
+
+app.get('/recipe', isAuthenticated, async (req, res) => {
+    let recipe_id = req.query.recipe_id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.send(rows[0]);
 });
 
 app.get('/recipe', isAuthenticated, async (req, res) => {
@@ -105,7 +174,7 @@ app.get('/recipe', isAuthenticated, async (req, res) => {
 
 app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
     // let recipe_id = req.query.recipe_id;
-    let sql = `SELECT name
+    let sql = `SELECT *
                 FROM recipe 
                 ORDER BY name`;
     const [rows] = await conn.query(sql);
@@ -116,10 +185,11 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
                 WHERE fr.user_id = ?;`;
 
     const [favorites] = await conn.query(sql2);
- 
+    
     console.log(favorites);
-    res.render('recipes.ejs',{rows, favorites});
+    res.render('recipes.ejs',{rows,picture: req.session.picture, favorites});
 });
+
 
 // Fetches the meal plan for the week
 app.get('/mealplanweek', isAuthenticated, async (req, res) => {
@@ -149,11 +219,11 @@ app.get('/admin', isAuthenticated,async (req, res) => {
 });
 
 app.get('/recipe/new', isAuthenticated, (req, res) => {
-    res.render('newRecipe.ejs');
+    res.render('newRecipe.ejs', {picture: req.session.picture});
  });
 
 // Post requests
-
+// Updated signup, can now create new user from sign up as intended
 app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
@@ -175,14 +245,21 @@ app.post('/signup', async(req, res) => {
     if(passcheck==0) {
         req.session.authenticated = true;
         req.session.username = username;
-        req.session.userid = rows[0].user_id;
+
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
-        console.log("run1");
-        res.render('home.ejs', {username: req.session.username});
+        
+        // works but need to get user_id
+        let sql2 = `SELECT user_id FROM user WHERE username = ?`;
+        const [newUser] = await conn.query(sql2, [username]);
+        req.session.userid = newUser[0].user_id;
+
+        const imageUrl = await getRandomFoodImage(); // get random pfp img when signing up
+        req.session.picture = imageUrl;
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
         res.redirect("/signup");
     }
@@ -203,7 +280,6 @@ app.post('/mealplan', isAuthenticated,async (req, res) => {
 
 app.post('/deletemealplan',isAuthenticated,async (req, res) => {
     let plan_id = req.body.plan_id;
-    console.log('Received Plan ID to delete:', plan_id);
 
     if (!plan_id) {
         throw new Error('Invalid plan_id');
@@ -218,7 +294,7 @@ app.post('/deletemealplan',isAuthenticated,async (req, res) => {
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-    console.log(password);
+    
     let passwordHash = "";
     // let match = await bcrypt.compare(password, passwordHash);
     // change admin to user likely
@@ -233,12 +309,14 @@ app.post('/login', async (req, res) => {
     let match = await bcrypt.compare(password, passwordHash);
 
     if(match) {
+        const imageUrl = await getRandomFoodImage();
         // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
         req.session.authenticated = true;
         req.session.username = username;
         req.session.userid = rows[0].user_id;
+        req.session.picture = imageUrl;
         console.log("user id: "+req.session.userid)
-        res.render('home.ejs', {username: req.session.username});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
     } else {
         res.redirect("/login");
     }
@@ -249,7 +327,7 @@ app.post('/login', async (req, res) => {
  app.post('/recipe/new', isAuthenticated, async (req, res) => {
     let name = req.body.name;
     let instructions = req.body.instructions;
-    let picUrl = req.body.picture;
+    let picUrl = req.body.thumbnail;
 
     let sql = `INSERT INTO recipe
     (name, instructions, thumbnail)
@@ -258,7 +336,7 @@ app.post('/login', async (req, res) => {
     let sqlParams = [name, instructions, picUrl];
     const[rows] = await conn.query(sql, sqlParams);
 
-    res.render('newRecipe.ejs');
+    res.render('newRecipe.ejs', {picture: req.session.picture});
 });
 
 
@@ -276,6 +354,17 @@ function isAuthenticated(req, res, next) {
         res.redirect("/");
     }
 }
+// function to get random food image
+async function getRandomFoodImage() {
+    const response = await fetch('https://foodish-api.com/api/');
+    const data = await response.json();
+    return data.image;
+}
+
+app.get('/random/food', async (req, res) => {
+    const imageUrl = await getRandomFoodImage();
+    res.render('randomFood.ejs', { imageUrl });
+});
 
 app.listen(3011, ()=>{
     console.log("Express server running on port 3011");

@@ -1,6 +1,7 @@
 body{
     background-color: #F5F5F5;
     margin: 0;
+    
 }
 
 #grocery{
@@ -52,7 +53,7 @@ body{
    left: 0;
 
 }
-input[type=radio]{
+input[type=checkbox]{
 
     width: 30px;
     height: 30px;
@@ -60,8 +61,6 @@ input[type=radio]{
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 10px;
-   
-
 }
 
 #add{
@@ -76,8 +75,7 @@ input[type=radio]{
     border-style: solid;
     border-color: #FF9800;
     margin:auto;
-    margin-bottom: 0;
-    margin-bottom: 0;
+    
     
 }
 
@@ -100,3 +98,4 @@ input[type=radio]{
 
 
 }
+
