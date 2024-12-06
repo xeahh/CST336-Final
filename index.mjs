@@ -36,7 +36,7 @@ const conn = await pool.getConnection();
 // api spoonacular https://api.spoonacular.com/recipes/complexSearch?apiKey=17b87f4473434a9fab7d8268985d33c7
 
 
-app.get('/recipe/meal/:mealId', async (req, res) => {
+app.get('/recipe/meal/:mealId', async (req, res) => { //puls infrmation from the recipes database to insert into a modal in the recipes page
     let mealId = req.params.mealId;
     let sql =  `SELECT *
                 FROM recipe
