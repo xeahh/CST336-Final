@@ -4,6 +4,7 @@
     <%- include("partials/head.ejs") %>
     <link href="css/recipes.css" rel="stylesheet">
     <title>Recipes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     
@@ -14,19 +15,22 @@
 
     <div id="mainContainer">
         <div id="favorites">
-            <span>Favorites <img id="heart" src="/img/heart.png"></span>
+            <div style="margin: 20px;">
+                <span>Favorites <img id="heart" src="/img/heart.png"></span>
+            <button><i class="fa fa-plus"></i></button>
+            </div>
+            
             <div id="meals">
-                <figure id="meal1">
 
-                </figure>
 
-                <figure id="meal2">
+                    <% favorites.forEach((meal) => { %>
+                        <div>
+                            <img style="width: 150px;" src="<%= meal.thumbnail %>">
+                        </div>
+                        
+                    <% }) %>
 
-                </figure>
-
-                <figure id="meal1">
-                    
-                </figure>
+                
             </div>
         </div>
 

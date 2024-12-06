@@ -109,8 +109,16 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
                 FROM recipe 
                 ORDER BY name`;
     const [rows] = await conn.query(sql);
+
+    let sql2 = `SELECT r.*
+                FROM favorite_recipe fr
+                JOIN recipe r ON fr.recipe_id = r.recipe_id
+                WHERE fr.user_id = ?;`;
+
+    const [favorites] = await conn.query(sql2);
  
-    res.render('recipes.ejs',{rows});
+    console.log(favorites);
+    res.render('recipes.ejs',{rows, favorites});
 });
 
 // Fetches the meal plan for the week
@@ -179,6 +187,7 @@ app.post('/signup', async(req, res) => {
         res.redirect("/signup");
     }
 });
+
 
 app.post('/mealplan', isAuthenticated,async (req, res) => {
         let recipe_id = req.query.recipe_id;
