@@ -36,7 +36,15 @@ const conn = await pool.getConnection();
 // api spoonacular https://api.spoonacular.com/recipes/complexSearch?apiKey=17b87f4473434a9fab7d8268985d33c7
 
 
-
+app.get('/recipe/meal/:mealId', async (req, res) => {
+    let mealId = req.params.mealId;
+    let sql =  `SELECT *
+                FROM recipe
+                WHERE name = ? ` ;
+    let sqlParams = [mealId];
+    const [rows] = await conn.query(sql, sqlParams);
+    res.send(rows);
+ });
 //routes
 app.get('/', (req, res) => {
     if(req.session.authenticated) {
@@ -219,6 +227,7 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
  
     res.render('recipes.ejs',{rows});
 });
+
 
 // Fetches the meal plan for the week
 app.get('/mealplanweek', isAuthenticated, async (req, res) => {

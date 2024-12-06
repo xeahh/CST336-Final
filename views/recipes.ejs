@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 
-    <link href="css/recipes.css" rel="stylesheet">
+   
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <%- include("partials/head.ejs") %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link href="css/recipes.css" rel="stylesheet">
+     <%- include("partials/head.ejs") %> 
     <title>Recipes</title>
 </head>
 <body>
@@ -18,7 +19,7 @@
 
     <div id="mainContainer">
         <div id="favorites">
-            <span>Favorites <img id="heart" src="/img/heart.png"></span>
+            <span id="favTitle">Favorites <img id="heart" src="/img/heart.png"></span>
             <div id="meals">
                 <figure id="meal1">
 
@@ -38,9 +39,9 @@
             <button type="button" data-toggle="modal" data-target="#exampleModal" id="add">+ Add Recipe</button>
             <div id="recipeBox">
                 <% for(let row of rows){%>
-                    <button type="button" class="mealLink" data-bs-toggle="modal" data-bs-target="#meal">
-                        <%= row.name %>
-                    </button>
+                  <button type="button"  class="mealLink" data-toggle="modal" data-target="#exampleModalLong" href="#" mealId="<%= row.name%>">
+                    <%= row.name %>
+                  </button>
                 <%}%>
             </div>
         </div>
@@ -78,84 +79,64 @@
       </div>
     </div>
   </div>
-  <script >
-    $('#exampleModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) // Button that triggered the modal
-    var recipient = button.data('whatever') // Extract info from data-* attributes
-    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    var modal = $(this)
-    modal.find('.modal-title').text('New message to ' + recipient)
-    modal.find('.modal-body input').val(recipient)
-  })
-  </script>
+ <!-- individual meal modal -->
+ <div class="modal fade" id="mealModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="mealName">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div id="authorInfo"> 
+              <img id="thumbnail"><br>
+              <h1 id="mealName"></h1><br>
+              Instructions: <span id="instructions"></span><br>
+             
 
-<!-- for meal modals --> 
-    <div class="modal fade" id="mealModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="mealName">Modal title</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
           </div>
-          <div class="modal-body">
-              <div id="mealInfo"> 
-                  <img id="mealImg"><br>
-                  <h1 id="mealName"></h1><br>
-                  Biography: <span id="bio"></span><br>
-                  Country: <span id="country"></span><br>
-                  Date of Birth: <span id="dob"></span><br>
-                  Date of Death:<span id="dod"></span><br>
-                  Profession: <span id="profession"></span><br>
-                  Sex: <span id="sex"></span>
-
-
-
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
   <script>
-      let authorLinks = document.querySelectorAll(".authorLink");
-      for(let i of authorLinks) {
-          i.addEventListener("click", displayAuthorInfo);
-      }
-      async function displayAuthorInfo() {
-          let authorId = this.getAttribute('authorId');
-          // let url = `/api/author/${authorId}`;
-          let url = "/api/author/" + authorId;
-          let response = await fetch(url);
-          let data = await response.json();
-          console.log(data);
+document.querySelectorAll(".mealLink").forEach((mealLink) => {
+    mealLink.removeEventListener("click", displayMealInfo); // Prevent duplicate listeners
+    mealLink.addEventListener("click", displayMealInfo);
+});
 
-          let dobFormatted = new Date(data[0].dob);
+async function displayMealInfo(event) {
+    event.stopPropagation(); // Prevent event bubbling
 
-          document.querySelector("#authorName").innerText = data[0].firstName + " " + data[0].lastName;
-          document.querySelector("#authorImg").src = data[0].portrait;
-          document.querySelector("#dob").innerText = dobFormatted.getDate()+"/" + (dobFormatted.getMonth() + 1) + "/" + dobFormatted.getFullYear();
-          document.querySelector("#dod").innerText = dobFormatted.getDate()+"/" + (dobFormatted.getMonth() + 1) + "/" + dobFormatted.getFullYear();
-          document.querySelector("#bio").innerText= data[0].biography;
-          document.querySelector("#country").innerText= data[0].country;
-          document.querySelector("#profession").innerText= data[0].profession;
-          document.querySelector("#sex").innerText= data[0].sex;
+    let mealId = this.getAttribute('mealId');
+    console.log("Meal ID:", mealId); // Confirm mealId is retrieved correctly
 
+    let url = "/recipe/meal/" + mealId;
+    console.log("Fetching URL:", url); // Confirm the correct URL is being hit
 
-          const myModal = new bootstrap.Modal('#authorModal');
-          myModal.show();
+    let response = await fetch(url);
+    let data = await response.json();
 
+    console.log("Fetched Data:", data); // Confirm the data structure from the backend
 
-      }
+    document.querySelector("#mealName").innerText = data[0].name;
+    document.querySelector("#thumbnail").src = data[0].thumbnail;
+    document.querySelector("#instructions").innerText = data[0].instructions;
+
+    const myModal = new bootstrap.Modal('#mealModal');
+    myModal.show();
+}   
   </script>
 
 
   
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-   
+    -->
 </body>
 </html>
