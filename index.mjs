@@ -184,7 +184,7 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
                 JOIN recipe r ON fr.recipe_id = r.recipe_id
                 WHERE fr.user_id = ?;`;
 
-    const [favorites] = await conn.query(sql2);
+    const [favorites] = await conn.query(sql2, [req.session.userid]);
     
     console.log(favorites);
     res.render('recipes.ejs',{rows,picture: req.session.picture, favorites});
