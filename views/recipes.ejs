@@ -31,17 +31,13 @@
             </div>
         </div>
 
-        <div id="allRecipes">
+        <div id="searchBox">
+            <input id="searchIn" type="text" placeholder="Enter a Meal">
             <form action="/recipe/new" method="GET">
                 <button type="submit" id="add">+ Add Recipe</button>
             </form>
-            <div id="recipeBox">
-                <% for(let row of rows){%>
-                    <button id="recipeBtn">
-                        <%= row.name %>
-                    </button>
-                <%}%>
-            </div>
+            <button id="searchBtn">Search</button>
+
         </div>
 
     </div>
