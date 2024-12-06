@@ -52,7 +52,7 @@ body{
    left: 0;
 
 }
-input[type=radio]{
+input[type=checkbox]{
 
     width: 30px;
     height: 30px;
@@ -60,8 +60,6 @@ input[type=radio]{
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 10px;
-   
-
 }
 
 #add{
@@ -76,8 +74,7 @@ input[type=radio]{
     border-style: solid;
     border-color: #FF9800;
     margin:auto;
-    margin-bottom: 0;
-    margin-bottom: 0;
+    
     
 }
 
@@ -98,5 +95,15 @@ input[type=radio]{
     font-size: 18px;
     margin-right: 60px;
 
+
+}
+
+#newItem{
+    
+    margin: auto;
+    font-family:'Gotham', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #FF9800;
 
 }
