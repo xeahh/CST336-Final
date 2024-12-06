@@ -253,7 +253,7 @@ app.get('/recipe/new', isAuthenticated, (req, res) => {
  });
 
 // Post requests
-
+// Updated signup, can now create new user from sign up as intended
 app.post('/signup', async(req, res) => { 
     let username = req.body.username;
     let password = req.body.password;
@@ -279,13 +279,20 @@ app.post('/signup', async(req, res) => {
     if(passcheck==0) {
         req.session.authenticated = true;
         req.session.username = username;
-        req.session.userid = rows[0].user_id;
+        // req.session.userid = rows[0].user_id; // cant get user id yet, must be inserted first
         let sql = `INSERT INTO user
                     (username, password)
                     VALUES
                     (?,?)`;
         const [new1] = await conn.query(sql, [username,hash]);
         console.log("run1");
+
+        // can now get the user_id from db
+        let sql2 = `SELECT user_id
+                    FROM user
+                    WHERE username = ?`;
+        const [newUser] = await conn.query(sql2, [username]);
+        req.session.userid = newUser[0].user_id;
         res.render('home.ejs', {username: req.session.username});
     } else {
         res.redirect("/signup");
@@ -380,6 +387,13 @@ function isAuthenticated(req, res, next) {
     }
 }
 
-app.listen(3011, ()=>{
-    console.log("Express server running on port 3011");
+// if fetching from api of a meal by name; fetchMealData(mealname), blank for all meals
+async function fetchMealData(mealName = '') {
+    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
+    const data = await response.json();
+    return data;
+}
+
+app.listen(3012, ()=>{
+    console.log("Express server running on port 3012");
 })
