@@ -53,9 +53,10 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title fs-5" id="mealLabel">New message</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
+          <h5 class="modal-title" id="exampleModalLabel">New Recipe Entry Form</h5>
+         
+        </button>
+        </div>
         <div class="modal-body">
           <form>
             <div class="form-group">
@@ -89,58 +90,66 @@
   })
   </script>
 
-<!-- for meal modals -->
-<div class="modal fade" id="meal" tabindex="-1" aria-labelledby="mealLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="mealLabel"></h1> </h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-            <!-- <img class="thumbnail">[insert img src] -->
-              <label for="recipient-name" class="col-form-label">Instructions:</label>
-              <p>
-                <!-- [insert instructions] -->
-              </p>
-              
-            </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">Ingredients:</label>
-              <!-- insert ingredients here -->
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<!-- for meal modals --> 
+    <div class="modal fade" id="mealModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="mealName">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div id="mealInfo"> 
+                  <img id="mealImg"><br>
+                  <h1 id="mealName"></h1><br>
+                  Biography: <span id="bio"></span><br>
+                  Country: <span id="country"></span><br>
+                  Date of Birth: <span id="dob"></span><br>
+                  Date of Death:<span id="dod"></span><br>
+                  Profession: <span id="profession"></span><br>
+                  Sex: <span id="sex"></span>
+
+
+
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
-</div>
-</figure>
   <script>
-        const meal = document.getElementById('meal')
-        if (meal) {meal.addEventListener('show.bs.modal', event => {
+      let authorLinks = document.querySelectorAll(".authorLink");
+      for(let i of authorLinks) {
+          i.addEventListener("click", displayAuthorInfo);
+      }
+      async function displayAuthorInfo() {
+          let authorId = this.getAttribute('authorId');
+          // let url = `/api/author/${authorId}`;
+          let url = "/api/author/" + authorId;
+          let response = await fetch(url);
+          let data = await response.json();
+          console.log(data);
 
-        // Button that triggered the modal
-        const button = event.relatedTarget
-        // Extract info from data-bs-* attributes
-        const recipient = button.getAttribute('data-bs-whatever')
-        // If necessary, you could initiate an Ajax request here
-        // and then do the updating in a callback.
+          let dobFormatted = new Date(data[0].dob);
 
-        // Update the modal's content.
-        const modalTitle = meal.querySelector('.modal-title')
-        const modalBodyInput = meal.querySelector('.modal-body input')
+          document.querySelector("#authorName").innerText = data[0].firstName + " " + data[0].lastName;
+          document.querySelector("#authorImg").src = data[0].portrait;
+          document.querySelector("#dob").innerText = dobFormatted.getDate()+"/" + (dobFormatted.getMonth() + 1) + "/" + dobFormatted.getFullYear();
+          document.querySelector("#dod").innerText = dobFormatted.getDate()+"/" + (dobFormatted.getMonth() + 1) + "/" + dobFormatted.getFullYear();
+          document.querySelector("#bio").innerText= data[0].biography;
+          document.querySelector("#country").innerText= data[0].country;
+          document.querySelector("#profession").innerText= data[0].profession;
+          document.querySelector("#sex").innerText= data[0].sex;
 
-        modalTitle.textContent = r
-        })
-        }
+
+          const myModal = new bootstrap.Modal('#authorModal');
+          myModal.show();
+
+
+      }
   </script>
-
-
 
 
   
