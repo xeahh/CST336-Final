@@ -72,7 +72,7 @@
         <div class="modal-content">
             <span class="close" id="close">&times;</span>
             <h2>Select a Recipe</h2>
-            <div style="display: flex;">
+            <div style="display: flex; flex-wrap: wrap;">
                 <% for (let i of recipes) { %>
                     <div class="recipe-item" data-recipe-id="<%= i.recipe_id %>" data-recipe-img="<%= i.thumbnail %>"><%= i.name %></div>
                 <% } %>

@@ -158,15 +158,36 @@ app.get('/mealplan', isAuthenticated, async (req, res) => {
     res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture});
 });
 
+app.get('/recipe', isAuthenticated, async (req, res) => {
+    let recipe_id = req.query.recipe_id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.send(rows[0]);
+});
+
+app.get('/recipe', isAuthenticated, async (req, res) => {
+    let recipe_id = req.query.recipe_id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.send(rows[0]);
+});
+
 app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
     // let recipe_id = req.query.recipe_id;
     let sql = `SELECT *
                 FROM recipe 
                 ORDER BY name`;
     const [rows] = await conn.query(sql);
- 
-    res.render('recipes.ejs',{rows,picture: req.session.picture});
 
+    let sql2 = `SELECT r.*
+                FROM favorite_recipe fr
+                JOIN recipe r ON fr.recipe_id = r.recipe_id
+                WHERE fr.user_id = ?;`;
+
+    const [favorites] = await conn.query(sql2, [req.session.userid]);
+    
+    console.log(favorites);
+    res.render('recipes.ejs',{rows,picture: req.session.picture, favorites});
 });
 
 
@@ -216,7 +237,6 @@ app.post('/signup', async(req, res) => {
     FROM user 
     WHERE username = ?`;
     const [rows] = await conn.query(sql, [username]);
-    console.log(rows.length);
     if(rows.length > 0) { 
         passcheck = 1; 
     }
@@ -244,6 +264,7 @@ app.post('/signup', async(req, res) => {
         res.redirect("/signup");
     }
 });
+
 
 app.post('/mealplan', isAuthenticated,async (req, res) => {
         let recipe_id = req.query.recipe_id;
