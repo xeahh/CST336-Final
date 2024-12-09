@@ -215,3 +215,7 @@ img{
     text-decoration: none;
     cursor: pointer;
   }
+
+  .recipe-item {
+    box-shadow: 0px 0px 3px #0000003b; border-radius: 10px;
+  }

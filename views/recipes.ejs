@@ -41,7 +41,7 @@
 
             <div id="recipeBox">
                 <% for(let row of rows){%>
-                    <div style="box-shadow: 0px 0px 3px #0000003b; border-radius: 10px;" class="recipe-item" data-recipe-id="<%= row.recipe_id %>" data-recipe-img="<%= row.thumbnail %>"><%= row.name %></div>
+                    <div class="recipe-item" data-recipe-id="<%= row.recipe_id %>" data-recipe-img="<%= row.thumbnail %>"><%= row.name %></div>
                 <%}%>
             </div>
     </div>
