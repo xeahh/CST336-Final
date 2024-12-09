@@ -8,7 +8,7 @@
 <body>
     <%- include('partials/nav', { isAdmin: isAdmin , username:username}) %>
 
-    <h1 id="welcome">Welcome back,<br> <%= username %>!</h1>
+    <h1 id="welcome">Welcome back,<br> <%= username.toUpperCase() %>!</h1>
 
     <div id="today">
         <span>Today's Meals</span>
@@ -31,6 +31,14 @@
         </div>
     </div>
     <br><br>
+    <div id="recipeDetailsModal" class="modal">
+        <div class="modal-content">
+            <span style="text-align: unset; width: unset;" class="close" id="close2">&times;</span>
+            <div id="recipeDetails"></div>
+            <div id="favButton">
+            </div>
+        </div>
+      </div>
     <script src="js/home.js"></script>
 </body>
 </html>

@@ -90,9 +90,8 @@ app.get('/signup', (req, res) => {
 app.get('/groceryList',isAuthenticated, async(req, res) => {
     let id = req.session.userid;
     let date = new Date();
-    let month =date.getMonth()+1
-    let day = date.getDate()
-    date=date.getFullYear()+"-"+month+"-"+day;
+    date = date.toLocaleDateString();
+    date = new Date(date);
 
     let sql = `SELECT * FROM meal_plan WHERE user_id = ? AND date = ?`;
     const [rows] = await conn.query(sql,[id,date]);
@@ -136,10 +135,10 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
         }
         return false;
     });
-    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    let nowMonth = months[month-1]
-    console.log(months[month-1])
-    res.render('groceryList.ejs',{username: req.session.username,uniqueIngredients,month: nowMonth, day,picture: req.session.picture, isAdmin: req.session.admin});
+    // const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    // let nowMonth = months[month-1]
+    // console.log(months[month-1])
+    res.render('groceryList.ejs',{uniqueIngredients, picture: req.session.picture, isAdmin: req.session.admin, username: req.session.username});
 
 });
 // app.get('/recipes', (req, res) => {
