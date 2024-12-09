@@ -19,8 +19,8 @@
            
             <div id="meals">
                     <% favorites.forEach((meal) => { %>
-                        <div class="recipe-item2" data-recipe-id=<%= meal.recipe_id %>" style="background-color: #ff990046; padding: 10px; width: 180px; height: 270px; border-radius: 30px; box-shadow: 0px 0px 3px #0000003b;">
-                            <img style="width: 150px;" src="<%= meal.thumbnail %>">
+                        <div style="background-color: #ff990046; padding: 10px; width: 180px; height: 270px; border-radius: 30px; box-shadow: 0px 0px 3px #0000003b;">
+                            <img class="recipe-item2" data-recipe-id="<%= meal.recipe_id %>" style="width: 150px;" src="<%= meal.thumbnail %>">
                             <h2><%=meal.name%></h2>
                             <form action="/deleteFavMeal" method="POST">
                               <input type="hidden" name="recipe_id" value="<%=meal.recipe_id%>">
