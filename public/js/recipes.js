@@ -1,6 +1,7 @@
 var modal = document.getElementById("myModal");
 var recipeDetailsModal = document.getElementById("recipeDetailsModal");
-var meals = document.querySelectorAll(".recipe-item");
+var meals = [...document.querySelectorAll(".recipe-item"), ...document.querySelectorAll(".recipe-item2")];
+console.log(meals);
 meals.forEach(function(meal) {
     meal.addEventListener("click", async function() {
         selectedMeal = this.id;
