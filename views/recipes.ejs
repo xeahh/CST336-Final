@@ -21,11 +21,9 @@
       <!-- <div style="display: flex;"> -->
 
         <div id="favorites">
-            <div style="margin: 20px;">
-                <span>Favorites <img id="heart" src="/imgs/heart.png"></span>
-            <button><i class="fa fa-plus"></i></button>
-            </div>
-            
+
+            <span id="favTitle">Favorites <img id="heart" src="/imgs/heart.png"></span>
+
             <div id="meals">
 
 
@@ -40,9 +38,11 @@
             </div>
         </div>
         <div id="allRecipes">
-          <form action="/recipe/new" method="GET">
-            <button type="submit" id="add">+ Add Recipe</button>
-          </form> 
+
+            <button type="button" id="add">
+              <a id="addRecipe" href="/recipe/new">+Add Recipe</a>
+            </button>
+
             <div id="recipeBox">
                 <% for(let row of rows){%>
                   <button type="button"  class="mealLink" data-toggle="modal" data-target="#exampleModalLong" href="#" mealId="<%= row.name%>">
