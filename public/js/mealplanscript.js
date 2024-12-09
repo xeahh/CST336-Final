@@ -165,12 +165,32 @@ async function getRecipeDetails(recipeId, mealPlanId) {
             <h2>Recipe Name: ${recipeName}</h2>
             <p>${recipeInstructions}</p>
             `;
-        var mealPlan = `<form action="/deletemealplan" method="POST">
-                 <input type="hidden" name="plan_id" value="${mealPlanId}">
-                <button type="submit">Remove</button>
-                </form>`;
-        document.getElementById("recipeDetails").innerHTML = recipeDetails;
-        document.getElementById("mealplanid").innerHTML = mealPlan;
+       // Define meal plans with placeholders for mealPlanId
+    var mealPlan = `
+    <form action="/deletemealplan" method="POST">
+    <input type="hidden" name="plan_id" value="${mealPlanId}">
+    <button type="submit">Remove</button>
+    </form>`;
+
+    var mealPlan2 = `
+    <form action="/addFavMeal" method="POST">
+    <input type="hidden" name="recipe_id" value="${recipeId}">
+    <button id="favBut" type="submit">
+        <img src="/imgs/heart.png" alt="Heart Icon" width="20" height="20">
+    </button>
+    </form>`;
+
+    // Update the innerHTML of the containers
+    document.getElementById("recipeDetails").innerHTML = recipeDetails;
+    document.getElementById("mealplanid").innerHTML = mealPlan;
+    document.getElementById("mealplanid2").innerHTML = mealPlan2;
+
+    // If needed, manipulate 'favBut' further after it's added to the DOM
+    var button1 = document.getElementById('favBut');
+    if (button1) {
+    console.log("Favorite button is now accessible:", button1);
+    }
+
     });
 };
 

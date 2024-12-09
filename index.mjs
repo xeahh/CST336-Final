@@ -147,11 +147,6 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
 // });
 
 
-
-app.get('/home', isAuthenticated, (req, res) => {    
-    res.render('home.ejs', {picture: req.session.picture});
-});
-
 app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
@@ -211,9 +206,9 @@ app.get('/admin', isAuthenticated,async (req, res) => {
     const [rows2] = await conn.query(sql2);
     let sql3 = `SELECT * FROM meal_plan`;
     const [rows3] = await conn.query(sql3);
-    let sql4 = `SELECT * FROM ingredient`;
+    let sql4 = `SELECT * FROM favorite_recipe`;
     const [rows4] = await conn.query(sql4);
-    res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, ingredients: rows4});
+    res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, fav: rows4});
 });
 
 app.get('/recipe/new', isAuthenticated, (req, res) => {
@@ -288,7 +283,41 @@ app.post('/deletemealplan',isAuthenticated,async (req, res) => {
     await conn.query(sql, sqlParams);
     res.redirect(req.get('referer'));
 });
+app.post('/deleteFavMeal',isAuthenticated,async (req, res) => {
+    let recipe_id = req.body.recipe_id;
 
+    if (!recipe_id) {
+        throw new Error('Invalid recipe_id');
+    }
+
+    let sql = `DELETE FROM favorite_recipe WHERE recipe_id = ?`;
+    let sqlParams = [recipe_id];
+    await conn.query(sql, sqlParams);
+    res.redirect(req.get('referer'));
+});
+app.post('/addFavMeal',isAuthenticated,async (req, res) => {
+    let user_id = req.session.userid;
+    let recipe_id = req.body.recipe_id;
+
+    let sql2 = `SELECT * FROM favorite_recipe WHERE recipe_id = ?`;
+    let sqlParam2 = [recipe_id];
+    const [rows] = await conn.query(sql2, sqlParam2);
+    if(rows.length>0){
+        res.redirect(req.get('referer'));
+    }else{
+       if (!recipe_id) {
+        throw new Error('Invalid recipe_id');
+    }
+    
+    let sql = `INSERT INTO favorite_recipe
+    (user_id, recipe_id)
+    VALUES
+    (?,?)`;
+    let sqlParams = [user_id,recipe_id];
+    await conn.query(sql, sqlParams);
+    res.redirect(req.get('referer')); 
+    }
+});
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
