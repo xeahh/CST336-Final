@@ -24,6 +24,7 @@ async function getTodaysMeals(today) {
 
             // Find the meal element to update
             var mealElement = document.querySelector(`[data-meal-type="${mealType}"]`);
+            var mealElement2 = document.querySelector(`[data-meal-name="${mealType}"]`);
             console.log(mealElement);
             if (!mealElement) {
                 console.log("Meal element not found");
@@ -31,6 +32,7 @@ async function getTodaysMeals(today) {
             } else {
                 mealElement.setAttribute("data-recipe-id", recipeId);
                 mealElement.src = recipeThumbnail;
+                mealElement2.innerText= recipeName;
             }
         });
 

@@ -189,3 +189,6 @@ td {
     position: absolute;
     right: 0;
 }
+#flex2{
+    display:-webkit-inline-flex;
+}
