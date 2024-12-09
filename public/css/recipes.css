@@ -52,6 +52,7 @@ img{
     width: 40%;
     height: auto;
     padding-bottom: 30px;
+    align-self: flex-start;
 }
 #recipeBox{
     display: flex;
