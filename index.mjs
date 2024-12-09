@@ -138,7 +138,7 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
     // const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     // let nowMonth = months[month-1]
     // console.log(months[month-1])
-    res.render('groceryList.ejs',{uniqueIngredients, picture: req.session.picture, isAdmin: req.session.admin});
+    res.render('groceryList.ejs',{uniqueIngredients, picture: req.session.picture, isAdmin: req.session.admin, username: req.session.username});
 
 });
 // app.get('/recipes', (req, res) => {
