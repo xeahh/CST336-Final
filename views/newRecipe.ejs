@@ -9,7 +9,7 @@
     <title>Adding recipe</title>
 </head>
 <body>
-     <%- include("partials/nav.ejs") %>
+    <%- include('partials/nav', { isAdmin: isAdmin }) %>
     <h1 id="title"> Add Your Own Recipe</h1>
     <div id="form">
         <form action="/recipe/new" method="POST">
