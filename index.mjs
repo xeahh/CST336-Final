@@ -49,9 +49,9 @@ app.get('/recipe/meal/:mealId', async (req, res) => {
 //routes
 app.get('/', (req, res) => {
     if(req.session.authenticated) {
-        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture, isAdmin: req.session.admin});
     } else {
-        res.render('landing.ejs', {picture: req.session.picture});
+        res.render('landing.ejs');
     }
 });
 
@@ -64,7 +64,7 @@ app.get('/profile',isAuthenticated, (req, res) => {
  });
 
  app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
+    res.render('home.ejs', {username: req.session.username, picture: req.session.picture, isAdmin: req.session.admin});
  });
 
  app.get('/settings', isAuthenticated, (req, res) => {
@@ -139,7 +139,7 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     let nowMonth = months[month-1]
     console.log(months[month-1])
-    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day,picture: req.session.picture});
+    res.render('groceryList.ejs',{uniqueIngredients,month: nowMonth, day,picture: req.session.picture, isAdmin: req.session.admin});
 
 });
 // app.get('/recipes', (req, res) => {
@@ -150,7 +150,7 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
 app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
-    res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture});
+    res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture, isAdmin: req.session.admin});
 });
 
 app.get('/recipe', isAuthenticated, async (req, res) => {
@@ -160,20 +160,18 @@ app.get('/recipe', isAuthenticated, async (req, res) => {
     res.send(rows[0]);
 });
 
-app.get('/recipe', isAuthenticated, async (req, res) => {
-    let recipe_id = req.query.recipe_id;
-    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
-    const [rows] = await conn.query(sql, [recipe_id]);
-    res.send(rows[0]);
-});
 
-app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes from database to display on recipes page
-    // let recipe_id = req.query.recipe_id;
+app.get('/recipes', isAuthenticated, async (req, res) => {
     let sql = `SELECT *
                 FROM recipe 
                 ORDER BY name`;
     const [rows] = await conn.query(sql);
 
+    /**
+     * The query joins the `favorite_recipe` table with the `recipe` table
+     * to retrieve all columns from the `recipe` table for the recipes
+     * that are favorited by the user with the given user ID.
+     */
     let sql2 = `SELECT r.*
                 FROM favorite_recipe fr
                 JOIN recipe r ON fr.recipe_id = r.recipe_id
@@ -181,8 +179,8 @@ app.get('/recipes', isAuthenticated, async (req, res) => { //pulls all recipes f
 
     const [favorites] = await conn.query(sql2, [req.session.userid]);
     
-    console.log(favorites);
-    res.render('recipes.ejs',{rows,picture: req.session.picture, favorites});
+    // console.log(favorites);
+    res.render('recipes.ejs',{rows,picture: req.session.picture, favorites, isAdmin: req.session.admin});
 });
 
 
@@ -201,7 +199,7 @@ app.get('/mealplanweek', isAuthenticated, async (req, res) => {
     res.send(rows);
 });
 
-app.get('/admin', isAuthenticated,async (req, res) => {
+app.get('/admin', isAdmin,async (req, res) => {
     let sql = `SELECT * FROM user`;
     const [rows] = await conn.query(sql);
     let sql2 = `SELECT * FROM recipe`;
@@ -210,11 +208,11 @@ app.get('/admin', isAuthenticated,async (req, res) => {
     const [rows3] = await conn.query(sql3);
     let sql4 = `SELECT * FROM favorite_recipe`;
     const [rows4] = await conn.query(sql4);
-    res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, fav: rows4});
+    res.render('admin.ejs', {users: rows, recipes: rows2, meal_plans: rows3, fav: rows4, picture: req.session.picture, isAdmin: req.session.admin});
 });
 
 app.get('/recipe/new', isAuthenticated, (req, res) => {
-    res.render('newRecipe.ejs', {picture: req.session.picture});
+    res.render('newRecipe.ejs', {picture: req.session.picture, isAdmin: req.session.admin});
  });
 
 // Post requests
@@ -323,6 +321,7 @@ app.post('/addFavMeal',isAuthenticated,async (req, res) => {
 app.post('/login', async (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
+    username = username.toLowerCase();
     
     let passwordHash = "";
     // let match = await bcrypt.compare(password, passwordHash);
@@ -339,13 +338,15 @@ app.post('/login', async (req, res) => {
 
     if(match) {
         const imageUrl = await getRandomFoodImage();
-        // req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+        if (username == "admin" || username == "testadmin") {
+            req.session.admin = true;
+        }
         req.session.authenticated = true;
         req.session.username = username;
         req.session.userid = rows[0].user_id;
         req.session.picture = imageUrl;
         console.log("user id: "+req.session.userid)
-        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture, isAdmin: req.session.admin});
     } else {
         res.redirect("/login");
     }
@@ -378,6 +379,15 @@ app.get("/dbTest", async(req, res) => {
 //Middleware Functions, to check if user is authenticated
 function isAuthenticated(req, res, next) {
     if(req.session.authenticated) {
+        next();
+    } else {
+        res.redirect("/");
+    }
+}
+
+// check if user is an admin
+function isAdmin(req, res, next) {
+    if(req.session.authenticated && req.session.admin) {
         next();
     } else {
         res.redirect("/");

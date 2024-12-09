@@ -16,8 +16,9 @@
         </button>
         <div class="dropdown-content">
           <a href="/logout">Log Out</a>
-          
+          <% if(isAdmin){ %>
+          <a href="/admin">Admin Page</a>
+          <% } %>
         </div>
       </div>
-
 </div>
