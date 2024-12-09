@@ -149,7 +149,7 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
 app.get('/mealplan', isAuthenticated, async (req, res) => {
     let sql = `SELECT * FROM recipe`;
     const [rows] = await conn.query(sql);
-    res.render('mealplan.ejs', {recipes: rows, picture: req.session.picture, isAdmin: req.session.admin});
+    res.render('mealplan.ejs', {username: req.session.username,recipes: rows, picture: req.session.picture, isAdmin: req.session.admin});
 });
 
 app.get('/recipe', isAuthenticated, async (req, res) => {
@@ -179,7 +179,7 @@ app.get('/recipes', isAuthenticated, async (req, res) => {
     const [favorites] = await conn.query(sql2, [req.session.userid]);
     
     // console.log(favorites);
-    res.render('recipes.ejs',{rows,picture: req.session.picture, favorites, isAdmin: req.session.admin});
+    res.render('recipes.ejs',{username: req.session.username,rows,picture: req.session.picture, favorites, isAdmin: req.session.admin});
 });
 
 
@@ -211,7 +211,7 @@ app.get('/admin', isAdmin,async (req, res) => {
 });
 
 app.get('/recipe/new', isAuthenticated, (req, res) => {
-    res.render('newRecipe.ejs', {picture: req.session.picture, isAdmin: req.session.admin});
+    res.render('newRecipe.ejs', {username: req.session.username,picture: req.session.picture, isAdmin: req.session.admin});
  });
 
 // Post requests
@@ -251,7 +251,7 @@ app.post('/signup', async(req, res) => {
 
         const imageUrl = await getRandomFoodImage(); // get random pfp img when signing up
         req.session.picture = imageUrl;
-        res.render('home.ejs', {username: req.session.username, picture: req.session.picture});
+        res.render('home.ejs', {username: req.session.username, picture: req.session.picture,isAdmin: req.session.admin});
     } else {
         res.redirect("/signup");
     }
@@ -365,7 +365,7 @@ app.post('/login', async (req, res) => {
     let sqlParams = [name, instructions, picUrl];
     const[rows] = await conn.query(sql, sqlParams);
 
-    res.render('newRecipe.ejs', {picture: req.session.picture});
+    res.render('newRecipe.ejs', {username: req.session.username,picture: req.session.picture,isAdmin: req.session.admin});
 });
 
 
