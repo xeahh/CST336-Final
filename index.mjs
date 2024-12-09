@@ -113,6 +113,10 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
             let data= await response2.json();
             data.meals.filter(obj => {
                 for (let key in obj) {
+                if(obj[key]===null){
+                    console.log("here")
+                }
+                else{
                   if (key.startsWith("strIngredient")) {
                     if(obj[key].length>0){
                     if (!ingredients.includes(obj[key])) {
@@ -120,6 +124,7 @@ app.get('/groceryList',isAuthenticated, async(req, res) => {
                             }
                         } 
                   }
+                }
                 }
                 return false;
               });
