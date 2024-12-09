@@ -6,7 +6,7 @@
     <title>Home</title>
 </head>
 <body>
-    <%- include('partials/nav', { isAdmin: isAdmin }) %>
+    <%- include('partials/nav', { isAdmin: isAdmin , username:username}) %>
 
     <h1 id="welcome">Welcome back,<br> <%= username %>!</h1>
 
