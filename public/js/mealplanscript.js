@@ -186,10 +186,10 @@ async function getRecipeDetails(recipeId, mealPlanId) {
     document.getElementById("mealplanid2").innerHTML = mealPlan2;
 
     // If needed, manipulate 'favBut' further after it's added to the DOM
-    var button1 = document.getElementById('favBut');
-    if (button1) {
-    console.log("Favorite button is now accessible:", button1);
-    }
+    // var button1 = document.getElementById('favBut');
+    // if (button1) {
+    // console.log("Favorite button is now accessible:", button1);
+    // }
 
     });
 };

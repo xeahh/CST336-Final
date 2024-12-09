@@ -31,7 +31,15 @@ async function getRecipeDetails(recipeId) {
             <h2>Recipe Name: ${recipeName}</h2>
             <p>${recipeInstructions}</p>
             `;
+        var favoriteBtn = `
+        <form action="/addFavMeal" method="POST">
+        <input type="hidden" name="recipe_id" value="${recipeId}">
+        <button id="favBut" type="submit">
+            <img src="/imgs/heart.png" alt="Heart Icon" width="20" height="20">
+        </button>
+        </form>`;
         document.getElementById("recipeDetails").innerHTML = recipeDetails;
+        document.getElementById("favButton").innerHTML = favoriteBtn;
     });
 };
 
