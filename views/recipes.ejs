@@ -30,6 +30,11 @@
                     <% favorites.forEach((meal) => { %>
                         <div>
                             <img style="width: 150px;" src="<%= meal.thumbnail %>">
+                            <h2><%=meal.name%></h2>
+                            <form action="/deleteFavMeal" method="POST">
+                              <input type="hidden" name="recipe_id" value="<%=meal.recipe_id%>">
+                              <button type="submit">Remove</button>
+                            </form>
                         </div>
                         
                     <% }) %>

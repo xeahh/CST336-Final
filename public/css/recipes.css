@@ -97,6 +97,8 @@ img{
     justify-content: space-evenly;
     border-radius: 30px;
     gap: 15px;
+    align-items: center;
+    text-align: center;
 }
 
 #meal1{

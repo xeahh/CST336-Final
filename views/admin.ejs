@@ -96,26 +96,22 @@
             </tbody>
         </table>
 
-    <h1>Ingredient Table</h1>
+    <h1>Favorite Recipes Table</h1>
     <div>
         <table>
             <thead>
                 <tr>
-                    <th>Ingredient ID</th>
-                    <th>Ingredient Name</th>
-                    <th>Unit</th>
-                    <th>Calories Per Unit</th>
-                    <th>Description</th>
+                    <th>Favorite_Recipe_ID</th>
+                    <th>User_ID</th>
+                    <th>Recipe_ID</th>
                 </tr>
             </thead>
             <tbody>
-                <% for (let i of ingredients) { %>
+                <% for (let i of fav) { %>
                     <tr>
-                        <td><%= i.ingredient_id %></td>
-                        <td><%= i.name %></td>
-                        <td><%= i.unit %></td>
-                        <td><%= i.calories_per_unit %></td>
-                        <td><%= i.description %></td>
+                        <td><%= i.favorite_recipe_id %></td>
+                        <td><%= i.user_id %></td>
+                        <td><%= i.recipe_id %></td>
                     </tr>
                 <% } %>
             </tbody>
