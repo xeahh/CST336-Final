@@ -8,7 +8,7 @@
 <body>
     <%- include('partials/nav', { isAdmin: isAdmin }) %>
 
-    <h1 id="welcome">Welcome back,<br> <%= username %>!</h1>
+    <h1 id="welcome">Welcome back,<br> <%= username.toUpperCase() %>!</h1>
 
     <div id="today">
         <span>Today's Meals</span>
