@@ -61,7 +61,7 @@
                 <% for (let i of recipes) { %>
                     <tr>
                         <td><%= i.recipe_id %></td>
-                        <td><%= i.name %></td>
+                        <td><%= i.name %>  <a href="/recipe/update/<%= i.recipe_id %>">Update</a> </td>
                         <td><%= i.instructions %></td>
                         <td><%= i.thumbnail %></td>
                     </tr>

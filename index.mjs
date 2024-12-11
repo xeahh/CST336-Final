@@ -374,6 +374,21 @@ app.post('/login', async (req, res) => {
 });
 
 
+app.get('/recipe/update/:id', isAuthenticated, async (req, res) => {
+    let recipe_id = req.params.id;
+    let sql = `SELECT * FROM recipe WHERE recipe_id = ?`;
+    const [rows] = await conn.query(sql, [recipe_id]);
+    res.render('editRecipe.ejs', { recipe: rows[0], isAdmin: req.session.admin, picture: req.session.picture, username: req.session.username});
+});
+app.post('/recipe/update/:id', isAuthenticated, async (req, res) => {
+    let recipe_id = req.params.id;
+    let { name, instructions, thumbnail } = req.body;
+    let sql = `UPDATE recipe SET name = ?, instructions = ?, thumbnail = ? WHERE recipe_id = ?`;
+    await conn.query(sql, [name, instructions, thumbnail, recipe_id]);
+    res.redirect('/recipes');
+});
+
+
 app.get("/dbTest", async(req, res) => {
     let sql = "SELECT CURDATE()";
     const [rows] = await conn.query(sql);
